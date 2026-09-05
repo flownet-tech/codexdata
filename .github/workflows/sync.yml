@@ -1,0 +1,29 @@
+name: Sync official Codex catalog
+
+# 外部同步 agent：Cloudflare Workers 的出口被 chatgpt.com 403（Phase 0 探针），
+# 所以由 GitHub 托管 runner 代为拉取：向 Worker 租一个 10 分钟内有效的 access token
+# → 拉官方目录 → 推回 Worker 校验发布。refresh token 永远不出 Worker。
+on:
+  schedule:
+    - cron: "7 * * * *" # 每小时 :07（UTC）；token 只在临过期时由 Worker 刷新
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一时间只允许一个同步在跑：Worker 侧还有 10 分钟租约兜底，这里是第一道闸。
+concurrency:
+  group: modeldex-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Lease token, fetch catalog, ingest
+        env:
+          MODELDEX_ORIGIN: ${{ vars.MODELDEX_ORIGIN || 'https://api.codexpass.com' }}
+          MODELDEX_ADMIN_TOKEN: ${{ secrets.MODELDEX_ADMIN_TOKEN }}
+        run: node scripts/sync-agent.mjs

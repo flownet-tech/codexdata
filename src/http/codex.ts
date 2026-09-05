@@ -42,7 +42,11 @@ export async function serveCodexModels(env: Env): Promise<Response> {
     env.MODELDEX_KV.get(KV_CURRENT, { cacheTtl: 300 }),
   ]);
   if (!meta || !body) return notSynced();
-  return jsonResponse(body, { cacheControl: CACHE_LIVE, etag: meta.etag, headers: metaHeaders(meta) });
+  return jsonResponse(body, {
+    cacheControl: CACHE_LIVE,
+    etag: meta.etag,
+    headers: metaHeaders(meta),
+  });
 }
 
 export async function serveCodexMeta(env: Env): Promise<Response> {
@@ -64,7 +68,10 @@ export async function serveSnapshot(env: Env, hash: string): Promise<Response> {
   if (!HASH_RE.test(hash)) return errorResponse(404, "unknown snapshot", "not_found");
   const text = await env.MODELDEX_KV.get(kvSnapshotKey(hash), { cacheTtl: 3600 });
   if (!text) return errorResponse(404, "unknown snapshot", "not_found");
-  return jsonResponse(text, { cacheControl: CACHE_IMMUTABLE, etag: `"sha256-${hash.slice(0, 32)}"` });
+  return jsonResponse(text, {
+    cacheControl: CACHE_IMMUTABLE,
+    etag: `"sha256-${hash.slice(0, 32)}"`,
+  });
 }
 
 export async function serveChanges(env: Env): Promise<Response> {

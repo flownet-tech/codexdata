@@ -85,9 +85,7 @@ const REQUIRED_FIELDS = [
   "experimental_supported_tools",
 ] as const;
 
-export type ValidationResult =
-  | { ok: true; models: CatalogModel[] }
-  | { ok: false; error: string };
+export type ValidationResult = { ok: true; models: CatalogModel[] } | { ok: false; error: string };
 
 export function validateCatalog(text: string): ValidationResult {
   let parsed: unknown;
@@ -171,7 +169,13 @@ export interface ChangeEvent {
 export function diffCatalogs(
   previous: CatalogModel[] | null,
   next: CatalogModel[],
-  meta: { at: string; fromHash: string | null; toHash: string; clientVersion: string; seqStart: number },
+  meta: {
+    at: string;
+    fromHash: string | null;
+    toHash: string;
+    clientVersion: string;
+    seqStart: number;
+  },
 ): ChangeEvent[] {
   const events: ChangeEvent[] = [];
   let seq = meta.seqStart;

@@ -43,8 +43,7 @@ export default {
       const cache = caches.default;
       let response = await cache.match(cacheKey);
       if (!response) {
-        response = api();
-        const fresh = await response;
+        const fresh = await api();
         if (fresh.ok && fresh.headers.get("cache-control")?.startsWith("public")) {
           ctx.waitUntil(cache.put(cacheKey, fresh.clone()));
         }
@@ -95,5 +94,7 @@ function routeApi(env: Env, path: string, origin: string): (() => Promise<Respon
 
 function publicOrigin(env: Env, fallback: string): string {
   const configured = env.MODELDEX_PUBLIC_ORIGIN;
-  return typeof configured === "string" && configured.startsWith("https://") ? configured : fallback;
+  return typeof configured === "string" && configured.startsWith("https://")
+    ? configured
+    : fallback;
 }

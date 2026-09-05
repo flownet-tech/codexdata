@@ -29,7 +29,9 @@ export async function importKek(base64Key: string): Promise<CryptoKey> {
 export async function seal(kek: CryptoKey, plaintext: string): Promise<string> {
   const iv = crypto.getRandomValues(new Uint8Array(IV_BYTES));
   const data = new TextEncoder().encode(plaintext);
-  const ciphertext = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, kek, data));
+  const ciphertext = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv }, kek, data),
+  );
   const out = new Uint8Array(iv.byteLength + ciphertext.byteLength);
   out.set(iv, 0);
   out.set(ciphertext, iv.byteLength);

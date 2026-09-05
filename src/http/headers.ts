@@ -10,13 +10,19 @@ export const CORS_HEADERS: Record<string, string> = {
 };
 
 export const CACHE_LIVE = "public, max-age=300, stale-while-revalidate=3600, stale-if-error=86400";
-export const CACHE_HOURLY = "public, max-age=3600, stale-while-revalidate=86400, stale-if-error=86400";
+export const CACHE_HOURLY =
+  "public, max-age=3600, stale-while-revalidate=86400, stale-if-error=86400";
 export const CACHE_IMMUTABLE = "public, max-age=31536000, immutable";
 export const CACHE_NONE = "no-store";
 
 export function jsonResponse(
   body: unknown,
-  init: { status?: number; cacheControl?: string; etag?: string; headers?: Record<string, string> } = {},
+  init: {
+    status?: number;
+    cacheControl?: string;
+    etag?: string;
+    headers?: Record<string, string>;
+  } = {},
 ): Response {
   const headers = new Headers({
     "content-type": "application/json; charset=utf-8",
