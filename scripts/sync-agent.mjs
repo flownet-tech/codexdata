@@ -77,6 +77,12 @@ async function main() {
     "lease",
     async () => {
       const { status, json } = await admin("/admin/lease", { agent });
+      if (status === 409 && typeof json.reason === "string" && json.reason.includes("not seeded")) {
+        // bootstrap 还没做：不是故障，安静退出，别把每小时的 workflow 刷红。
+        const err = new Error("not seeded yet — run scripts/seed.mjs (docs/RUNBOOK.md)");
+        err.skip = true;
+        throw err;
+      }
       if (status === 409) throw new Error(`lease busy: ${json.reason}`);
       if (status === 503) {
         // 永久失败（token 失效等）：不重试，需人工重新 seed。
@@ -90,6 +96,10 @@ async function main() {
     },
     3,
   ).catch((error) => {
+    if (error?.skip) {
+      log("skipped", { reason: error.message });
+      process.exit(0);
+    }
     if (error?.permanent) {
       log("permanent_failure", { reason: error.message });
       process.exit(2);

@@ -38,9 +38,13 @@
    Put the same ADMIN_TOKEN value into the GitHub repo secret `MODELDEX_ADMIN_TOKEN`
    (`gh secret set MODELDEX_ADMIN_TOKEN` reads from stdin).
 3. Deploy: `pnpm deploy` (first deploy auto-creates the KV namespace and the DO migration).
-   Custom domain `api.codexpass.com`: the zone is on Cloudflare; if the deploy cannot create the
-   custom-domain DNS record, add the Worker custom domain once in the dashboard
-   (Workers & Pages → modeldex → Settings → Domains & Routes).
+   **Custom domain `api.codexpass.com`**: the `codexpass.com` zone is on Cloudflare but **not in
+   the "Project 0xinf - FLOWNET" account** that hosts the Worker (deploy fails with code 10082
+   "Can't infer zone from route"). Until that is fixed the public origin is
+   `https://modeldex.flownet.workers.dev` (set as GitHub variable `MODELDEX_ORIGIN` and as
+   `MODELDEX_PUBLIC_ORIGIN` in `wrangler.jsonc`). To get the custom domain, either move the zone
+   into this account, or deploy the Worker into the account that owns the zone; then restore the
+   `routes` line in `wrangler.jsonc` and switch both origins back to `https://api.codexpass.com`.
 4. Log the dedicated account in on a trusted machine into a throwaway Codex home:
    ```bash
    CODEX_HOME=/tmp/modeldex-bootstrap codex login

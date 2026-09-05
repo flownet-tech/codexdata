@@ -19,10 +19,14 @@
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SyncCoordinator"] }],
   // 每小时第 7 分钟同步一次官方目录（token 只在临过期时刷新）。
   "triggers": { "crons": ["7 * * * *"] },
-  "routes": [{ "pattern": "api.codexpass.com", "custom_domain": true }],
+  // 自定义域 api.codexpass.com：该 zone 不在本 Worker 所在的 Cloudflare 账号里
+  // （deploy 报 code 10082 "Can't infer zone from route"）。把 zone 迁进本账号、或在
+  // zone 所在账号里部署后，恢复下面这行。此前用 workers.dev 地址。
+  // "routes": [{ "pattern": "api.codexpass.com", "custom_domain": true }],
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "vars": {
-    "MODELDEX_PUBLIC_ORIGIN": "https://api.codexpass.com",
+    // 自定义域可用后改回 https://api.codexpass.com（只影响 /v1/index.json 里的绝对链接）。
+    "MODELDEX_PUBLIC_ORIGIN": "https://modeldex.flownet.workers.dev",
     // "external"：目录由外部 agent（GitHub Actions，scripts/sync-agent.mjs）拉取后推回；
     // "worker"：DO 自己拉——Phase 0 探针显示 Workers 出口被 chatgpt.com 403，暂不可用。
     "SYNC_MODE": "external",
