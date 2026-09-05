@@ -92,6 +92,8 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
         codex_meta: `${origin}/v1/codex/meta.json`,
         codex_snapshots: `${origin}/v1/codex/snapshots/index.json`,
         codex_changes: `${origin}/v1/codex/changes.json`,
+        codex_model_info_schema: `${origin}/v1/schema/codex-model-info/latest.json`,
+        codex_model_info_schema_index: `${origin}/v1/schema/codex-model-info/index.json`,
         health: `${origin}/healthz`,
       },
       codex: meta
@@ -106,6 +108,8 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
       licenses: {
         code: "MIT",
         profile_data: "CC-BY-4.0 (data/; not published yet)",
+        codex_model_info_schema:
+          "CC-BY-4.0; derived from openai/codex protocol sources (Apache-2.0, reproduced with LICENSE + NOTICE in the repository)",
         codex_catalog: "Served as-is from OpenAI; no license granted by Codex Models.",
       },
     },

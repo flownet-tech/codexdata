@@ -2,3 +2,5 @@ node_modules
 .wrangler
 worker-configuration.d.ts
 pnpm-lock.yaml
+# verbatim openai/codex snapshots — must stay byte-identical
+data/codex-schema/sources/

@@ -11,6 +11,7 @@ import {
   serveSnapshotsIndex,
 } from "./http/codex";
 import { errorResponse, headOf, notModifiedIfMatches, preflight } from "./http/headers";
+import { SCHEMA_PATH_PREFIX, serveSchema } from "./http/schema";
 
 export { SyncCoordinator } from "./sync/coordinator";
 
@@ -86,6 +87,9 @@ function routeApi(env: Env, path: string, origin: string): (() => Promise<Respon
       if (snapshot) {
         const hash = snapshot[1]!;
         return () => serveSnapshot(env, hash);
+      }
+      if (path.startsWith(SCHEMA_PATH_PREFIX)) {
+        return () => serveSchema(path, publicOrigin(env, origin));
       }
       return null;
     }

@@ -21,7 +21,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "node scripts/seed.mjs",
-    "check": "pnpm typecheck && pnpm format:check && pnpm test"
+    "validate": "node scripts/validate.mjs",
+    "check": "pnpm typecheck && pnpm format:check && pnpm validate && pnpm test"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.22.0",
@@ -31,6 +32,6 @@
     "wrangler": "^4.129.0"
   },
   "dependencies": {
-    "zod": "^4.5.4"
+    "@cfworker/json-schema": "^4.1.1"
   }
 }

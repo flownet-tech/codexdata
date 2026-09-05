@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import bundledCatalog from "../data/codex-schema/sources/rust-v0.153.4/models.json";
 import {
   canonicalCatalogText,
   catalogHash,
@@ -15,14 +16,51 @@ describe("validateCatalog", () => {
     expect(result.ok).toBe(true);
   });
 
+  it("accepts the client's own bundled models.json (rust-v0.153.4) verbatim", () => {
+    // 11 official entries, legacy base_instructions promoted, plus keys the struct does not
+    // have (supports_parallel_tool_calls, prefer_websockets, …) which the client ignores.
+    const result = validateCatalog(JSON.stringify(bundledCatalog));
+    expect(result).toMatchObject({ ok: true });
+    if (result.ok) expect(result.models.length).toBe(11);
+  });
+
   it("rejects the whole catalog when one entry lacks a required field", () => {
     const broken = officialModel({ slug: "gpt-x" });
     delete (broken as Record<string, unknown>)["truncation_policy"];
     const result = validateCatalog(JSON.stringify({ models: [officialModel(), broken] }));
-    expect(result).toEqual({
-      ok: false,
-      error: "models[1] missing required field `truncation_policy`",
-    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toContain("schema:");
+      expect(result.error).toContain("/models/1");
+      expect(result.error).toContain("truncation_policy");
+    }
+  });
+
+  it("rejects closed-enum typos, empty efforts and levels without a description", () => {
+    for (const [label, overrides] of [
+      ["shell_type", { shell_type: "shell" }],
+      ["visibility", { visibility: "listed" }],
+      ["truncation mode", { truncation_policy: { mode: "chars", limit: 10 } }],
+      ["input modality", { input_modalities: ["text", "video"] }],
+      ["apply_patch_tool_type", { apply_patch_tool_type: "function" }],
+      ["default_verbosity", { default_verbosity: "max" }],
+      ["empty effort", { supported_reasoning_levels: [{ effort: "", description: "x" }] }],
+      ["level without description", { supported_reasoning_levels: [{ effort: "high" }] }],
+      ["priority as string", { priority: "6" }],
+      ["tool_mode as number", { tool_mode: 1 }],
+    ] as const) {
+      const result = validateCatalog(
+        JSON.stringify({ models: [officialModel(overrides as Partial<CatalogModel>)] }),
+      );
+      expect(result.ok, label).toBe(false);
+    }
+    // Unknown effort strings and unknown keys are fine (Custom(String) / ignored).
+    const lenient = officialModel({
+      supported_reasoning_levels: [{ effort: "turbo", description: "vendor level" }],
+      tool_mode: "something_new",
+      supports_parallel_tool_calls: true,
+    } as Partial<CatalogModel>);
+    expect(validateCatalog(JSON.stringify({ models: [lenient] })).ok).toBe(true);
   });
 
   it("requires base_instructions or model_messages.instructions_template", () => {
@@ -31,6 +69,8 @@ describe("validateCatalog", () => {
     expect(validateCatalog(JSON.stringify({ models: [noPrompt] })).ok).toBe(false);
     const withTemplate = { ...noPrompt, model_messages: { instructions_template: "Codex" } };
     expect(validateCatalog(JSON.stringify({ models: [withTemplate] })).ok).toBe(true);
+    const nullTemplate = { ...noPrompt, model_messages: { instructions_template: null } };
+    expect(validateCatalog(JSON.stringify({ models: [nullTemplate] })).ok).toBe(false);
   });
 
   it("rejects empty lists, duplicates, non-JSON and OpenAI-dialect lists", () => {

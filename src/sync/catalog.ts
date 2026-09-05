@@ -1,13 +1,20 @@
 // 官方 Codex 目录：拉取、校验、规范化、比对。
 //
-// Codex 0.153.x 反序列化事实（openai/codex protocol/src/openai_models.rs）：
+// Codex 反序列化事实（openai/codex protocol/src/openai_models.rs，rust-v0.148.0 … 0.153.4）：
 //   - 顶层必须有 `models` 数组；未知顶层键忽略。
 //   - 每条必填：slug, display_name, supported_reasoning_levels, shell_type, visibility,
 //     supported_in_api, priority, support_verbosity, truncation_policy,
 //     experimental_supported_tools，以及 base_instructions 或
-//     model_messages.instructions_template 二选一。
+//     model_messages.instructions_template 二选一；封闭枚举（shell_type / visibility /
+//     apply_patch_tool_type / web_search_tool_type / truncation.mode / input_modalities /
+//     default_reasoning_summary / default_verbosity）任一拼错即整份拒。
 //   - **一条不合格整份拒**，客户端当作拉取失败。所以镜像绝不发布不合格的目录。
+//
+// 这些规则以 JSON Schema 形式维护在 data/codex-schema/codex-model-info.schema.json（同一份
+// 也对外发布在 /v1/schema/codex-model-info/*），本文件只加镜像自己的两条约束：非空、slug 唯一。
 
+import { Validator, type Schema } from "@cfworker/json-schema";
+import modelInfoSchema from "../../data/codex-schema/codex-model-info.schema.json";
 import { sha256Hex } from "./crypto";
 
 export const CODEX_MODELS_URL = "https://chatgpt.com/backend-api/codex/models";
@@ -73,18 +80,8 @@ async function readBounded(response: Response, limit: number): Promise<string> {
   return new TextDecoder().decode(joined);
 }
 
-const REQUIRED_FIELDS = [
-  "slug",
-  "display_name",
-  "supported_reasoning_levels",
-  "shell_type",
-  "visibility",
-  "supported_in_api",
-  "priority",
-  "support_verbosity",
-  "truncation_policy",
-  "experimental_supported_tools",
-] as const;
+/// 与 Codex 客户端同一套拒绝规则（见文件头）。`shortCircuit=false` 拿到全部错误再挑最具体的一条。
+const modelInfoValidator = new Validator(modelInfoSchema as Schema, "2020-12", false);
 
 export type ValidationResult = { ok: true; models: CatalogModel[] } | { ok: false; error: string };
 
@@ -102,36 +99,38 @@ export function validateCatalog(text: string): ValidationResult {
   if (!Array.isArray(models)) return { ok: false, error: "missing `models` array" };
   if (models.length === 0) return { ok: false, error: "`models` is empty" };
 
+  const verdict = modelInfoValidator.validate(parsed);
+  if (!verdict.valid) {
+    return { ok: false, error: `schema: ${describeSchemaErrors(verdict.errors)}` };
+  }
+
   const seen = new Set<string>();
   for (const [index, entry] of models.entries()) {
-    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-      return { ok: false, error: `models[${index}] is not an object` };
-    }
-    const record = entry as Record<string, unknown>;
-    for (const field of REQUIRED_FIELDS) {
-      if (!(field in record) || record[field] === undefined) {
-        return { ok: false, error: `models[${index}] missing required field \`${field}\`` };
-      }
-    }
-    const slug = record["slug"];
+    const slug = (entry as Record<string, unknown>)["slug"];
     if (typeof slug !== "string" || slug.trim().length === 0) {
       return { ok: false, error: `models[${index}].slug is not a non-empty string` };
     }
     if (seen.has(slug)) return { ok: false, error: `duplicate slug \`${slug}\`` };
     seen.add(slug);
-    const messages = record["model_messages"];
-    const hasTemplate =
-      messages !== null &&
-      typeof messages === "object" &&
-      typeof (messages as Record<string, unknown>)["instructions_template"] === "string";
-    if (typeof record["base_instructions"] !== "string" && !hasTemplate) {
-      return {
-        ok: false,
-        error: `model \`${slug}\` is missing both base_instructions and model_messages.instructions_template`,
-      };
-    }
   }
   return { ok: true, models: models as CatalogModel[] };
+}
+
+/// 校验器输出是自顶向下的一串（anyOf/allOf 的父错误也在里面）；最深的 instanceLocation
+/// 才是人能看懂的那条。取最深的前三条，去重。
+function describeSchemaErrors(
+  errors: readonly { instanceLocation: string; error: string }[],
+): string {
+  const ranked = [...errors].sort(
+    (a, b) => b.instanceLocation.split("/").length - a.instanceLocation.split("/").length,
+  );
+  const lines: string[] = [];
+  for (const item of ranked) {
+    const line = `${item.instanceLocation || "#"}: ${item.error}`;
+    if (!lines.includes(line)) lines.push(line);
+    if (lines.length === 3) break;
+  }
+  return lines.join("; ");
 }
 
 /// 规范化：对象键排序（递归），数组保序。同一份目录无论上游键序如何都得到同一哈希。

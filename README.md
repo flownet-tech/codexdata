@@ -8,13 +8,18 @@ Static JSON served from Cloudflare Workers:
 - **Official OpenAI Codex catalog mirror** (`/v1/codex/*`): the exact `{"models":[...]}` envelope
   the Codex client fetches from `chatgpt.com/backend-api/codex/models`, synced centrally from one
   dedicated account, with immutable snapshots and a change feed (new-model-release history).
+- **JSON Schema of Codex's `ModelInfo`** (`/v1/schema/codex-model-info/latest.json`, per tag at
+  `/<tag>.json`, list at `/index.json`): what makes the Codex client reject a whole `/models`
+  response (required fields, JSON types, closed enums), derived from the client's own source at
+  every tag from `rust-v0.148.0` to `rust-v0.153.4` (`data/codex-schema/`, source snapshots
+  included under Apache-2.0). The mirror validates every catalog it publishes against this same
+  schema, and clients that add entries of their own should do the same before serving them.
 - **Third-party model profiles for Codex** (`/v1/profiles/codex.json`, _upcoming_): human-curated,
   reviewable source data (reasoning levels and defaults, context window, modalities, tool flags,
   minimal client version) that a client such as [codex-pass](https://codexpass.com) renders locally
   into Codex's `ModelInfo` format, so a relay-hosted model (Claude, Gemini, DeepSeek, …) can appear
-  in the native Codex picker with a correct reasoning slider. Profiles ship with the JSON Schema of
-  Codex's `ModelInfo` per client tag (`/v1/schema/codex-model-info/<tag>.json`) so entries can be
-  validated fail-closed before they are ever sent to a client.
+  in the native Codex picker with a correct reasoning slider, validated fail-closed against the
+  schema above before it is ever sent to a client.
 
 Public host: `https://codex-models.flownet.workers.dev` · Docs: `/` · Discovery: `/v1/index.json`
 
@@ -22,8 +27,8 @@ Public host: `https://codex-models.flownet.workers.dev` · Docs: `/` · Discover
 > `chatgpt.com/backend-api/codex/models` (403 HTML from the edge), while `auth.openai.com` is
 > reachable. The catalog fetch therefore runs from an external agent (GitHub Actions) that leases
 > the token from the Worker, refreshes it, hands the rotated token back, and pushes the fetched
-> catalog to the Worker for validation and publishing. See `docs/RUNBOOK.md`. Profiles and schema
-> endpoints are not published yet.
+> catalog to the Worker for validation and publishing. See `docs/RUNBOOK.md`. The schema
+> endpoints are live; profiles are not published yet.
 
 ## Honest notes
 
@@ -47,7 +52,10 @@ Code: MIT (`LICENSE`). Profile data under `data/`: CC-BY-4.0 (`data/LICENSE-DATA
 ```bash
 corepack enable && pnpm install
 pnpm typecheck      # wrangler types + tsc
+pnpm validate       # data/codex-schema: schema compiles, snapshots present, bundled models.json passes
 pnpm test           # vitest (workers pool / Miniflare)
+pnpm check          # all of the above + prettier
 pnpm dev            # local Worker on http://localhost:8787
 pnpm deploy:dry     # validate config without deploying
+pnpm run deploy     # deploy (note: `pnpm deploy` alone is pnpm's own workspace command)
 ```
