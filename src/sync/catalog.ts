@@ -33,7 +33,8 @@ export async function fetchOfficialCatalog(
   const headers: Record<string, string> = {
     authorization: `Bearer ${input.accessToken}`,
     originator: "codex-tui",
-    "user-agent": `codex-tui/${input.clientVersion} (Cloudflare Workers; modeldex) (codex-tui; ${input.clientVersion})`,
+    // 与 scripts/sync-agent.mjs 同一形状：不带任何自有标识（不给 OpenAI 留产品指纹）。
+    "user-agent": `codex-tui/${input.clientVersion} (Linux 6.8.0; x86_64) (codex-tui; ${input.clientVersion})`,
     accept: "application/json",
   };
   if (input.accountId) headers["chatgpt-account-id"] = input.accountId;

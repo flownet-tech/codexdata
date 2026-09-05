@@ -2,7 +2,7 @@
 // 一次性 bootstrap：把专用账号的 `codex login` 结果（auth.json）交给 Worker 的
 // SyncCoordinator 加密保存。token 走 TLS 请求体，不进 argv、不进日志。
 //
-//   MODELDEX_ADMIN_TOKEN=… node scripts/seed.mjs --auth /tmp/modeldex-bootstrap/auth.json [--origin https://api.codexpass.com] [--shred]
+//   CODEX_MODELS_ADMIN_TOKEN=… node scripts/seed.mjs --auth /tmp/codex-models-bootstrap/auth.json [--origin https://codex-models.flownet.workers.dev] [--shred]
 //
 // --shred：seed 成功后用零覆盖并删除 auth.json（确保这份 refresh token 只存在于 Worker）。
 
@@ -14,21 +14,21 @@ const opt = (name, fallback) => {
   return i >= 0 && args[i + 1] ? args[i + 1] : fallback;
 };
 const authPath = opt("--auth", null);
-const origin = opt("--origin", process.env.MODELDEX_ORIGIN ?? "https://api.codexpass.com").replace(
-  /\/+$/,
-  "",
-);
+const origin = opt(
+  "--origin",
+  process.env.CODEX_MODELS_ORIGIN ?? "https://codex-models.flownet.workers.dev",
+).replace(/\/+$/, "");
 const shred = args.includes("--shred");
-const adminToken = process.env.MODELDEX_ADMIN_TOKEN ?? "";
+const adminToken = process.env.CODEX_MODELS_ADMIN_TOKEN ?? "";
 
 if (!authPath) {
   console.error(
-    "usage: MODELDEX_ADMIN_TOKEN=… node scripts/seed.mjs --auth <auth.json> [--origin <url>] [--shred]",
+    "usage: CODEX_MODELS_ADMIN_TOKEN=… node scripts/seed.mjs --auth <auth.json> [--origin <url>] [--shred]",
   );
   process.exit(2);
 }
 if (!adminToken) {
-  console.error("MODELDEX_ADMIN_TOKEN is required (env)");
+  console.error("CODEX_MODELS_ADMIN_TOKEN is required (env)");
   process.exit(2);
 }
 

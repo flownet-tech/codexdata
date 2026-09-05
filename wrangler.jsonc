@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "modeldex",
+  "name": "codex-models",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-22",
   "compatibility_flags": ["nodejs_compat"],
@@ -11,7 +11,7 @@
     "binding": "ASSETS",
   },
   // 发布后的目录快照与元数据（读路径只读 KV）。id 留空 → wrangler deploy 自动创建。
-  "kv_namespaces": [{ "binding": "MODELDEX_KV" }],
+  "kv_namespaces": [{ "binding": "CODEX_MODELS_KV" }],
   // 唯一的写者：同步协调器（SQLite 存储；持有加密后的 OAuth token、运行记录）。
   "durable_objects": {
     "bindings": [{ "name": "SYNC", "class_name": "SyncCoordinator" }],
@@ -26,7 +26,7 @@
   "observability": { "enabled": true, "head_sampling_rate": 1 },
   "vars": {
     // 自定义域可用后改回 https://api.codexpass.com（只影响 /v1/index.json 里的绝对链接）。
-    "MODELDEX_PUBLIC_ORIGIN": "https://modeldex.flownet.workers.dev",
+    "CODEX_MODELS_PUBLIC_ORIGIN": "https://codex-models.flownet.workers.dev",
     // "external"：目录由外部 agent（GitHub Actions，scripts/sync-agent.mjs）拉取后推回；
     // "worker"：DO 自己拉——Phase 0 探针显示 Workers 出口被 chatgpt.com 403，暂不可用。
     "SYNC_MODE": "external",

@@ -1,8 +1,8 @@
 {
-  "name": "modeldex",
+  "name": "codex-models",
   "version": "0.1.0",
   "private": true,
-  "description": "ModelDex — open model catalog: official OpenAI Codex catalog mirror + cross-provider model registry, served as static JSON from Cloudflare Workers.",
+  "description": "Codex Models — independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) plus curated third-party model profiles for the Codex client, served as static JSON from Cloudflare Workers. Not affiliated with OpenAI.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.12.3",

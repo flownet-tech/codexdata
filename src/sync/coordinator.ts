@@ -489,7 +489,7 @@ export class SyncCoordinator extends DurableObject<Env> {
         client_version: clientVersion,
         etag,
       };
-      await this.env.MODELDEX_KV.put(KV_META, JSON.stringify(meta));
+      await this.env.CODEX_MODELS_KV.put(KV_META, JSON.stringify(meta));
       await this.record(at, reason, "unchanged", null, hash, clientVersion, started);
       return { status: "unchanged", hash, client_version: clientVersion };
     }
@@ -528,13 +528,13 @@ export class SyncCoordinator extends DurableObject<Env> {
       snapshot_id: hash,
     };
 
-    await this.env.MODELDEX_KV.put(kvSnapshotKey(hash), canonical, {
+    await this.env.CODEX_MODELS_KV.put(kvSnapshotKey(hash), canonical, {
       expirationTtl: SNAPSHOT_TTL_SECONDS,
     });
-    await this.env.MODELDEX_KV.put(KV_CURRENT, canonical);
-    await this.env.MODELDEX_KV.put(KV_CHANGES, JSON.stringify(changes));
-    await this.env.MODELDEX_KV.put(KV_SNAPSHOTS_INDEX, JSON.stringify(index));
-    await this.env.MODELDEX_KV.put(KV_META, JSON.stringify(meta));
+    await this.env.CODEX_MODELS_KV.put(KV_CURRENT, canonical);
+    await this.env.CODEX_MODELS_KV.put(KV_CHANGES, JSON.stringify(changes));
+    await this.env.CODEX_MODELS_KV.put(KV_SNAPSHOTS_INDEX, JSON.stringify(index));
+    await this.env.CODEX_MODELS_KV.put(KV_META, JSON.stringify(meta));
     await this.record(at, reason, "ok", null, hash, clientVersion, started);
     return {
       status: "ok",
@@ -571,7 +571,7 @@ export class SyncCoordinator extends DurableObject<Env> {
     const meta = await this.readMeta();
     if (meta) {
       const lastRun: LastRun = { at, reason, status, error, duration_ms: duration };
-      await this.env.MODELDEX_KV.put(KV_META, JSON.stringify({ ...meta, last_run: lastRun }));
+      await this.env.CODEX_MODELS_KV.put(KV_META, JSON.stringify({ ...meta, last_run: lastRun }));
     }
   }
 
@@ -590,7 +590,7 @@ export class SyncCoordinator extends DurableObject<Env> {
   }
 
   private async readCurrentModels(): Promise<CatalogModel[] | null> {
-    const text = await this.env.MODELDEX_KV.get(KV_CURRENT);
+    const text = await this.env.CODEX_MODELS_KV.get(KV_CURRENT);
     if (!text) return null;
     try {
       const parsed = JSON.parse(text) as { models?: unknown };
@@ -601,7 +601,7 @@ export class SyncCoordinator extends DurableObject<Env> {
   }
 
   private async readJson<T>(key: string): Promise<T | null> {
-    const text = await this.env.MODELDEX_KV.get(key);
+    const text = await this.env.CODEX_MODELS_KV.get(key);
     if (!text) return null;
     try {
       return JSON.parse(text) as T;

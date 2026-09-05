@@ -18,12 +18,12 @@ jobs:
           curl -s -o body.json -w 'status=%{http_code} type=%{content_type} ms=%{time_total}\n' \
             -X POST https://auth.openai.com/oauth/token \
             -H 'content-type: application/json' \
-            --data '{"client_id":"app_EMoamEEZ73f0CkXaXp7hrann","grant_type":"refresh_token","refresh_token":"modeldex-probe-invalid"}'
+            --data '{"client_id":"app_EMoamEEZ73f0CkXaXp7hrann","grant_type":"refresh_token","refresh_token":"codex-models-probe-invalid"}'
           head -c 300 body.json; echo
       - name: Probe chatgpt.com/backend-api/codex/models (bogus bearer, codex-like UA)
         run: |
           curl -s -o body.txt -w 'status=%{http_code} type=%{content_type} ms=%{time_total}\n' \
-            -H 'Authorization: Bearer modeldex-probe-invalid' \
+            -H 'Authorization: Bearer codex-models-probe-invalid' \
             -H 'originator: codex-tui' \
             -A 'codex-tui/0.153.4 (Linux 6.8.0; x86_64) (codex-tui; 0.153.4)' \
             'https://chatgpt.com/backend-api/codex/models?client_version=0.153.4'
@@ -32,7 +32,7 @@ jobs:
         run: |
           node -e '
             const r = await fetch("https://chatgpt.com/backend-api/codex/models?client_version=0.153.4", {
-              headers: { authorization: "Bearer modeldex-probe-invalid", originator: "codex-tui",
+              headers: { authorization: "Bearer codex-models-probe-invalid", originator: "codex-tui",
                          "user-agent": "codex-tui/0.153.4 (Linux 6.8.0; x86_64) (codex-tui; 0.153.4)" } });
             const t = await r.text();
             console.log("status=" + r.status, "type=" + r.headers.get("content-type"));

@@ -43,7 +43,7 @@ const inOneHour = () => Math.floor(Date.now() / 1000) + 3600;
 const expired = () => Math.floor(Date.now() / 1000) - 60;
 
 async function admin(path: string, body?: unknown, method = "POST"): Promise<Response> {
-  return SELF.fetch(`https://modeldex.test${path}`, {
+  return SELF.fetch(`https://codex-models.test${path}`, {
     method,
     headers: ADMIN,
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
@@ -88,9 +88,9 @@ beforeEach(async () => {
 
 describe("admin auth", () => {
   it("rejects missing or wrong tokens without touching the coordinator", async () => {
-    const none = await SELF.fetch("https://modeldex.test/admin/status");
+    const none = await SELF.fetch("https://codex-models.test/admin/status");
     expect(none.status).toBe(401);
-    const wrong = await SELF.fetch("https://modeldex.test/admin/status", {
+    const wrong = await SELF.fetch("https://codex-models.test/admin/status", {
       headers: { authorization: "Bearer nope" },
     });
     expect(wrong.status).toBe(401);
@@ -102,14 +102,14 @@ describe("admin auth", () => {
 
 describe("before any sync", () => {
   it("serves 503 not-synced and an unhealthy /healthz, never an empty list", async () => {
-    const models = await SELF.fetch("https://modeldex.test/v1/codex/models.json");
+    const models = await SELF.fetch("https://codex-models.test/v1/codex/models.json");
     expect(models.status).toBe(503);
     expect(((await models.json()) as { error: { type: string } }).error.type).toBe(
-      "modeldex_not_synced",
+      "codex_models_not_synced",
     );
-    const health = await SELF.fetch("https://modeldex.test/healthz");
+    const health = await SELF.fetch("https://codex-models.test/healthz");
     expect(health.status).toBe(503);
-    const index = await SELF.fetch("https://modeldex.test/v1/index.json");
+    const index = await SELF.fetch("https://codex-models.test/v1/index.json");
     expect(index.status).toBe(200);
     expect(((await index.json()) as { codex: unknown }).codex).toBeNull();
   });
@@ -122,50 +122,50 @@ describe("lease / ingest / serve", () => {
     expect(ingest.status, await ingest.clone().text()).toBe(200);
     expect(await ingest.json()).toMatchObject({ status: "ok", model_count: 1, changes: 1 });
 
-    const res = await SELF.fetch("https://modeldex.test/v1/codex/models.json");
+    const res = await SELF.fetch("https://codex-models.test/v1/codex/models.json");
     expect(res.status).toBe(200);
     expect(res.headers.get("etag")).toBe('W/"v1"');
     expect(res.headers.get("cache-control")).toContain("max-age=300");
     expect(res.headers.get("access-control-allow-origin")).toBe("*");
-    expect(res.headers.get("x-modeldex-client-version")).toBe("0.153.4");
-    expect(res.headers.get("x-modeldex-source-plan")).toBe("pro");
+    expect(res.headers.get("x-codex-models-client-version")).toBe("0.153.4");
+    expect(res.headers.get("x-codex-models-source-plan")).toBe("pro");
     const body = (await res.json()) as { models: Array<Record<string, unknown>> };
     expect(body.models).toHaveLength(1);
     expect(body.models[0]?.["slug"]).toBe("gpt-5.6-sol");
     expect(body.models[0]?.["base_instructions"]).toBe("You are Codex.");
 
-    const conditional = await SELF.fetch("https://modeldex.test/v1/codex/models.json", {
+    const conditional = await SELF.fetch("https://codex-models.test/v1/codex/models.json", {
       headers: { "if-none-match": 'W/"v1"' },
     });
     expect(conditional.status).toBe(304);
 
     const meta = (await (
-      await SELF.fetch("https://modeldex.test/v1/codex/meta.json")
+      await SELF.fetch("https://codex-models.test/v1/codex/meta.json")
     ).json()) as CodexMeta;
     expect(meta.model_count).toBe(1);
     expect(meta.listed_slugs).toEqual(["gpt-5.6-sol"]);
     expect(meta.source).toMatchObject({ plan_label: "pro", account_fp: "acct-123", agent: "test" });
     expect(meta.last_run?.status).toBe("ok");
 
-    const health = await SELF.fetch("https://modeldex.test/healthz");
+    const health = await SELF.fetch("https://codex-models.test/healthz");
     expect(health.status).toBe(200);
   });
 
   it("never publishes a malformed catalog and keeps the last good one", async () => {
     await seed();
     expect((await leaseAndIngest(catalogBody())).status).toBe(200);
-    const before = await env.MODELDEX_KV.get(KV_CURRENT);
+    const before = await env.CODEX_MODELS_KV.get(KV_CURRENT);
 
     const broken = officialModel({ slug: "gpt-broken" });
     delete (broken as Record<string, unknown>)["shell_type"];
     const bad = await leaseAndIngest(catalogBody([officialModel(), broken]));
     expect(bad.status).toBe(422);
     expect(await bad.json()).toMatchObject({ status: "error" });
-    expect(await env.MODELDEX_KV.get(KV_CURRENT)).toBe(before);
+    expect(await env.CODEX_MODELS_KV.get(KV_CURRENT)).toBe(before);
 
     const html = await leaseAndIngest("<html>login</html>", null as unknown as string, 403);
     expect(html.status).toBe(422);
-    expect(await env.MODELDEX_KV.get(KV_CURRENT)).toBe(before);
+    expect(await env.CODEX_MODELS_KV.get(KV_CURRENT)).toBe(before);
   });
 
   it("reports unchanged content, appends change events, and keeps snapshots", async () => {
@@ -186,7 +186,7 @@ describe("lease / ingest / serve", () => {
     expect(await next.json()).toMatchObject({ status: "ok", changes: 2 });
 
     const changes = (await (
-      await SELF.fetch("https://modeldex.test/v1/codex/changes.json")
+      await SELF.fetch("https://codex-models.test/v1/codex/changes.json")
     ).json()) as Array<{
       kind: string;
       slug: string;
@@ -196,17 +196,17 @@ describe("lease / ingest / serve", () => {
       "changed:gpt-5.6-sol",
       "added:gpt-5.6-sol",
     ]);
-    const raw = await env.MODELDEX_KV.get(KV_CHANGES);
+    const raw = await env.CODEX_MODELS_KV.get(KV_CHANGES);
     expect(raw).not.toBeNull();
 
     const index = (await (
-      await SELF.fetch("https://modeldex.test/v1/codex/snapshots/index.json")
+      await SELF.fetch("https://codex-models.test/v1/codex/snapshots/index.json")
     ).json()) as Array<{
       hash: string;
     }>;
     expect(index).toHaveLength(2);
     const snapshot = await SELF.fetch(
-      `https://modeldex.test/v1/codex/snapshots/${index[1]!.hash}.json`,
+      `https://codex-models.test/v1/codex/snapshots/${index[1]!.hash}.json`,
     );
     expect(snapshot.status).toBe(200);
     expect(snapshot.headers.get("cache-control")).toContain("immutable");
@@ -277,7 +277,7 @@ describe("token refresh inside the coordinator", () => {
     const again = await admin("/admin/lease", { agent: "t" });
     expect(again.status).toBe(503);
     expect((await mock.log()).filter((e) => e.url.includes("auth.openai.com"))).toHaveLength(1);
-    expect((await SELF.fetch("https://modeldex.test/healthz")).status).toBe(503);
+    expect((await SELF.fetch("https://codex-models.test/healthz")).status).toBe(503);
 
     // 重新 seed 解除冻结。
     await seed();
@@ -304,6 +304,6 @@ describe("modes", () => {
     const ctx = createExecutionContext();
     await worker.scheduled(createScheduledController({ cron: "7 * * * *" }), env, ctx);
     await waitOnExecutionContext(ctx);
-    expect(await env.MODELDEX_KV.get(KV_META)).toBeNull();
+    expect(await env.CODEX_MODELS_KV.get(KV_META)).toBeNull();
   });
 });

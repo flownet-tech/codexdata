@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: modeldex-deploy
+  group: codex-models-deploy
   cancel-in-progress: false
 
 jobs:

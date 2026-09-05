@@ -1,4 +1,4 @@
-// ModelDex Worker 入口：读路径（KV → 边缘缓存）、管理路径、定时同步。
+// Codex Models Worker 入口：读路径（KV → 边缘缓存）、管理路径、定时同步。
 
 import { handleAdmin } from "./http/admin";
 import {
@@ -93,7 +93,7 @@ function routeApi(env: Env, path: string, origin: string): (() => Promise<Respon
 }
 
 function publicOrigin(env: Env, fallback: string): string {
-  const configured = env.MODELDEX_PUBLIC_ORIGIN;
+  const configured = env.CODEX_MODELS_PUBLIC_ORIGIN;
   return typeof configured === "string" && configured.startsWith("https://")
     ? configured
     : fallback;

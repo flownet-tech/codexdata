@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ModelDex — open model catalog</title>
+    <title>Codex Models — official Codex catalog mirror + third-party model profiles</title>
     <style>
       body {
         font:
@@ -45,11 +45,17 @@
     </style>
   </head>
   <body>
-    <h1>ModelDex</h1>
+    <h1>Codex Models</h1>
+    <p class="muted">
+      Not affiliated with OpenAI. An independent, open mirror and dataset for the OpenAI Codex
+      client.
+    </p>
     <p>
-      An open model catalog served as static JSON from Cloudflare Workers: a mirror of the official
-      OpenAI Codex model catalog (what the Codex client itself fetches from
-      <code>chatgpt.com/backend-api/codex/models</code>), plus a cross-provider model registry.
+      Static JSON served from Cloudflare Workers: a mirror of the official OpenAI Codex model
+      catalog (what the Codex client itself fetches from
+      <code>chatgpt.com/backend-api/codex/models</code>) with snapshots and a change feed, plus
+      (upcoming) curated third-party model profiles that clients render into Codex's
+      <code>ModelInfo</code> format.
     </p>
     <h2>Endpoints (v1)</h2>
     <table>
@@ -103,8 +109,8 @@
     </ul>
     <h2>Licenses</h2>
     <p class="muted">
-      Code: MIT. Registry data: CC-BY-4.0. <code>/v1/codex/*</code> bodies are served as-is from
-      OpenAI; ModelDex grants no license over them.
+      Code: MIT. Profile data: CC-BY-4.0. <code>/v1/codex/*</code> bodies are served as-is from
+      OpenAI; Codex Models grants no license over them.
     </p>
   </body>
 </html>

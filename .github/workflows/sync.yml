@@ -13,7 +13,7 @@ permissions:
 
 # 同一时间只允许一个同步在跑：Worker 侧还有 10 分钟租约兜底，这里是第一道闸。
 concurrency:
-  group: modeldex-sync
+  group: codex-models-sync
   cancel-in-progress: false
 
 jobs:
@@ -24,6 +24,6 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Lease token, fetch catalog, ingest
         env:
-          MODELDEX_ORIGIN: ${{ vars.MODELDEX_ORIGIN || 'https://api.codexpass.com' }}
-          MODELDEX_ADMIN_TOKEN: ${{ secrets.MODELDEX_ADMIN_TOKEN }}
+          CODEX_MODELS_ORIGIN: ${{ vars.CODEX_MODELS_ORIGIN || 'https://codex-models.flownet.workers.dev' }}
+          CODEX_MODELS_ADMIN_TOKEN: ${{ secrets.CODEX_MODELS_ADMIN_TOKEN }}
         run: node scripts/sync-agent.mjs

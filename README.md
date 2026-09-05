@@ -1,22 +1,29 @@
-# ModelDex
+# Codex Models
 
-Open model catalog served as static JSON from Cloudflare Workers:
+**Not affiliated with, endorsed by, or maintained by OpenAI.** "Codex" refers to OpenAI's Codex
+client; this project is an independent, open mirror and dataset for it.
+
+Static JSON served from Cloudflare Workers:
 
 - **Official OpenAI Codex catalog mirror** (`/v1/codex/*`): the exact `{"models":[...]}` envelope
   the Codex client fetches from `chatgpt.com/backend-api/codex/models`, synced centrally from one
-  dedicated account so that clients behind a proxy do not each have to call OpenAI.
-- **Cross-provider model registry** (`/v1/registry*`, `/v1/pricing.json`): model name, provider,
-  reasoning effort levels, context/output limits, modalities, tool capabilities, pricing, status,
-  dates — OpenAI entries derived from the official catalog, other providers imported from
-  [models.dev](https://models.dev) with attribution, plus curated overrides.
+  dedicated account, with immutable snapshots and a change feed (new-model-release history).
+- **Third-party model profiles for Codex** (`/v1/profiles/codex.json`, _upcoming_): human-curated,
+  reviewable source data (reasoning levels and defaults, context window, modalities, tool flags,
+  minimal client version) that a client such as [codex-pass](https://codexpass.com) renders locally
+  into Codex's `ModelInfo` format, so a relay-hosted model (Claude, Gemini, DeepSeek, …) can appear
+  in the native Codex picker with a correct reasoning slider. Profiles ship with the JSON Schema of
+  Codex's `ModelInfo` per client tag (`/v1/schema/codex-model-info/<tag>.json`) so entries can be
+  validated fail-closed before they are ever sent to a client.
 
-Public host: `https://api.codexpass.com` · Docs: `/` · Discovery: `/v1/index.json`
+Public host: `https://codex-models.flownet.workers.dev` · Docs: `/` · Discovery: `/v1/index.json`
 
 > **Status: work in progress.** Phase 0 egress probe found that Cloudflare Workers cannot reach
 > `chatgpt.com/backend-api/codex/models` (403 HTML from the edge), while `auth.openai.com` is
 > reachable. The catalog fetch therefore runs from an external agent (GitHub Actions) that leases
 > the token from the Worker, refreshes it, hands the rotated token back, and pushes the fetched
-> catalog to the Worker for validation and publishing. See `docs/RUNBOOK.md`.
+> catalog to the Worker for validation and publishing. See `docs/RUNBOOK.md`. Profiles and schema
+> endpoints are not published yet.
 
 ## Honest notes
 
@@ -25,11 +32,15 @@ Public host: `https://api.codexpass.com` · Docs: `/` · Discovery: `/v1/index.j
   successfully fetched catalog and `/healthz` turns 503.
 - The catalog reflects that one account's plan/rollout view (`meta.json` → `source.plan_label`).
 - `/v1/codex/*` bodies include OpenAI's model instructions verbatim (the Codex client requires
-  them). They are relayed as-is; ModelDex grants no license over them.
+  them). They are relayed as-is; Codex Models grants no license over them.
+- A Codex client discards the **entire** `/models` response if any single entry fails to parse.
+  Third-party profiles are therefore source data, not ready-made catalog entries: the consuming
+  client must render and validate them against the schema for the exact client version it serves.
 
 ## Licenses
 
-Code: MIT (`LICENSE`). Registry data: CC-BY-4.0 (`data/LICENSE-DATA`). `/v1/codex/*`: none granted.
+Code: MIT (`LICENSE`). Profile data under `data/`: CC-BY-4.0 (`data/LICENSE-DATA`).
+`/v1/codex/*`: none granted (OpenAI's content, relayed as-is).
 
 ## Development
 

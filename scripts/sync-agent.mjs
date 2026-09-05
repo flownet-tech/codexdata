@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// ModelDex 外部同步 agent（Node ≥ 20，零依赖）。
+// Codex Models 外部同步 agent（Node ≥ 20，零依赖）。
 //
 // 用途：Cloudflare Workers 的出口打不到 chatgpt.com（Phase 0 探针 403），所以由能到达的
 // 机器（GitHub Actions runner / 任意主机）代为拉取官方目录，再推回 Worker 发布。
@@ -7,14 +7,16 @@
 // 永远不出 Worker；拉取结果原样推回，校验与发布都在 Worker 内。
 //
 // 环境变量：
-//   MODELDEX_ORIGIN       Worker 地址（默认 https://api.codexpass.com）
-//   MODELDEX_ADMIN_TOKEN  /admin/* 的 Bearer token（必填）
-//   MODELDEX_AGENT        本 agent 的名字（默认 hostname 或 GITHUB_RUN_ID）
+//   CODEX_MODELS_ORIGIN       Worker 地址（默认 https://codex-models.flownet.workers.dev）
+//   CODEX_MODELS_ADMIN_TOKEN  /admin/* 的 Bearer token（必填）
+//   CODEX_MODELS_AGENT        本 agent 的名字（默认 hostname 或 GITHUB_RUN_ID）
 
-const origin = (process.env.MODELDEX_ORIGIN ?? "https://api.codexpass.com").replace(/\/+$/, "");
-const adminToken = process.env.MODELDEX_ADMIN_TOKEN ?? "";
+const origin = (
+  process.env.CODEX_MODELS_ORIGIN ?? "https://codex-models.flownet.workers.dev"
+).replace(/\/+$/, "");
+const adminToken = process.env.CODEX_MODELS_ADMIN_TOKEN ?? "";
 const agent =
-  process.env.MODELDEX_AGENT ??
+  process.env.CODEX_MODELS_AGENT ??
   (process.env.GITHUB_RUN_ID
     ? `github-actions#${process.env.GITHUB_RUN_ID}`
     : `host:${process.env.HOSTNAME ?? "unknown"}`);
@@ -73,7 +75,7 @@ async function latestClientVersion(hint) {
 }
 
 async function main() {
-  if (!adminToken) throw new Error("MODELDEX_ADMIN_TOKEN is required");
+  if (!adminToken) throw new Error("CODEX_MODELS_ADMIN_TOKEN is required");
 
   const lease = await withRetry(
     "lease",

@@ -1,14 +1,14 @@
 # Data license
 
-The curated registry data under `data/` (providers, models, overrides) is licensed under the
-Creative Commons Attribution 4.0 International License (CC BY 4.0):
-https://creativecommons.org/licenses/by/4.0/
+The curated data under `data/` (third-party model profiles for the Codex client, and the derived
+JSON Schema files for Codex's `ModelInfo`) is licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/
 
-Attribution: "ModelDex (https://api.codexpass.com) — CC BY 4.0".
+Attribution: "Codex Models (https://codex-models.flownet.workers.dev) — CC BY 4.0".
 
-Parts of the registry are imported from models.dev (https://github.com/sst/models.dev, MIT
-License, © SST contributors); those entries carry `source.kind = "models.dev"` and retain that
-attribution.
+Files copied from the openai/codex repository (the base instructions prompt and per-tag source
+snapshots used to derive the schema) keep their original Apache-2.0 license; see the LICENSE and
+NOTICE files placed next to them.
 
 The official OpenAI Codex catalog served under `/v1/codex/*` is NOT covered by this license. It is
-relayed as-is from OpenAI's service; ModelDex claims no rights over it and grants no license.
+relayed as-is from OpenAI's service; Codex Models claims no rights over it and grants no license.
