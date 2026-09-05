@@ -1,0 +1,40 @@
+name: Egress probe
+
+# 一次性探针：GitHub 托管 runner 的出口能否到达 OpenAI 的两个端点。
+# 只用假凭据：401/400 JSON = 过了边缘防护到达应用层；403 + HTML = 被边缘规则拦截。
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Probe auth.openai.com/oauth/token (bogus refresh token)
+        run: |
+          curl -s -o body.json -w 'status=%{http_code} type=%{content_type} ms=%{time_total}\n' \
+            -X POST https://auth.openai.com/oauth/token \
+            -H 'content-type: application/json' \
+            --data '{"client_id":"app_EMoamEEZ73f0CkXaXp7hrann","grant_type":"refresh_token","refresh_token":"modeldex-probe-invalid"}'
+          head -c 300 body.json; echo
+      - name: Probe chatgpt.com/backend-api/codex/models (bogus bearer, codex-like UA)
+        run: |
+          curl -s -o body.txt -w 'status=%{http_code} type=%{content_type} ms=%{time_total}\n' \
+            -H 'Authorization: Bearer modeldex-probe-invalid' \
+            -H 'originator: codex-tui' \
+            -A 'codex-tui/0.153.4 (Linux 6.8.0; x86_64) (codex-tui; 0.153.4)' \
+            'https://chatgpt.com/backend-api/codex/models?client_version=0.153.4'
+          head -c 300 body.txt; echo
+      - name: Probe chatgpt.com again with Node fetch (undici TLS fingerprint)
+        run: |
+          node -e '
+            const r = await fetch("https://chatgpt.com/backend-api/codex/models?client_version=0.153.4", {
+              headers: { authorization: "Bearer modeldex-probe-invalid", originator: "codex-tui",
+                         "user-agent": "codex-tui/0.153.4 (Linux 6.8.0; x86_64) (codex-tui; 0.153.4)" } });
+            const t = await r.text();
+            console.log("status=" + r.status, "type=" + r.headers.get("content-type"));
+            console.log(t.slice(0, 300));
+          '

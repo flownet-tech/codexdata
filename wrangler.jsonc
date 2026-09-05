@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "modeldex",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  // 静态资源：文档页、JSON Schema、OpenAPI、注册表静态底稿（PR 2）。
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  // 发布后的目录快照与元数据（读路径只读 KV）。id 留空 → wrangler deploy 自动创建。
+  "kv_namespaces": [{ "binding": "MODELDEX_KV" }],
+  // 唯一的写者：同步协调器（SQLite 存储；持有加密后的 OAuth token、运行记录）。
+  "durable_objects": {
+    "bindings": [{ "name": "SYNC", "class_name": "SyncCoordinator" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SyncCoordinator"] }],
+  // 每小时第 7 分钟同步一次官方目录（token 只在临过期时刷新）。
+  "triggers": { "crons": ["7 * * * *"] },
+  "routes": [{ "pattern": "api.codexpass.com", "custom_domain": true }],
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": {
+    "MODELDEX_PUBLIC_ORIGIN": "https://api.codexpass.com"
+  }
+}
