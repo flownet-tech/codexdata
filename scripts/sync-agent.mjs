@@ -49,6 +49,8 @@ async function withRetry(label, fn, attempts = 4) {
     try {
       return await fn();
     } catch (error) {
+      // 跳过/永久失败不是瞬时错误，重试只会浪费时间。
+      if (error?.skip || error?.permanent) throw error;
       lastError = error;
       log("retry", { label, attempt: i, error: String(error) });
       await new Promise((r) => setTimeout(r, 1500 * i));
