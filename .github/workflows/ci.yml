@@ -26,6 +26,8 @@ jobs:
         run: pnpm typecheck
       - name: Format check
         run: pnpm format:check
+      - name: Data validation (schema + feature registry)
+        run: pnpm validate
       - name: Tests (workers pool)
         run: pnpm test
       - name: Wrangler config dry run

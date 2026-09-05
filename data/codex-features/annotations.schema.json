@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "codex-feature-annotations",
+  "description": "Human-curated Chinese annotations layered over the extracted feature-flag registry. Keys are canonical flag keys; validate.mjs additionally checks each key exists in the registry.",
+  "type": "object",
+  "propertyNames": { "pattern": "^[a-z0-9_]{1,64}$" },
+  "additionalProperties": {
+    "type": "object",
+    "properties": {
+      "title_zh": { "type": "string", "minLength": 1 },
+      "summary_zh": { "type": "string", "minLength": 1 },
+      "aka": { "type": "string", "minLength": 1 },
+      "note_zh": { "type": "string", "minLength": 1 },
+      "risk_zh": { "type": "string", "minLength": 1 }
+    },
+    "required": ["title_zh", "summary_zh"],
+    "additionalProperties": false
+  }
+}

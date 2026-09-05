@@ -75,6 +75,18 @@
 - **Rotate ADMIN_TOKEN**: `wrangler secret put ADMIN_TOKEN` + update the GitHub secret.
 - **Rotate KEK**: not supported in place (stored ciphertext would become unreadable) — rotate by
   re-seeding after setting the new KEK.
+- **Feature-flag dataset: adding a new Codex tag** (manual, on each upstream `rust-v*` release):
+  1. Vendor `codex-rs/features/src/lib.rs` at the new tag into
+     `data/codex-features/sources/<tag>/` (raw.githubusercontent.com). If it is byte-identical to
+     the previous snapshot, add the tag to `snapshot_aliases` in `data/codex-features/tags.json`
+     instead. Diff `legacy.rs` too; it has been identical across tags so far and lives once at
+     `sources/legacy.rs`.
+  2. Add the tag to `verified_tags` + `latest` in `data/codex-features/tags.json`, then run
+     `node scripts/extract-features.mjs` to regenerate `registry.json`. The parser fails loudly if
+     upstream changed the table's shape — extend it, don't hand-edit the registry.
+  3. `pnpm validate` prints any flags at the new tag that lack a Chinese annotation; add them to
+     `data/codex-features/annotations.json` (coverage gaps warn but do not fail CI).
+  4. `pnpm check`, deploy.
 
 ## Known limitations
 

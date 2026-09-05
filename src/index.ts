@@ -11,6 +11,7 @@ import {
   serveSnapshotsIndex,
 } from "./http/codex";
 import { errorResponse, headOf, notModifiedIfMatches, preflight } from "./http/headers";
+import { FEATURES_PATH_PREFIX, serveFeatures } from "./http/features";
 import { SCHEMA_PATH_PREFIX, serveSchema } from "./http/schema";
 
 export { SyncCoordinator } from "./sync/coordinator";
@@ -90,6 +91,9 @@ function routeApi(env: Env, path: string, origin: string): (() => Promise<Respon
       }
       if (path.startsWith(SCHEMA_PATH_PREFIX)) {
         return () => serveSchema(path, publicOrigin(env, origin));
+      }
+      if (path.startsWith(FEATURES_PATH_PREFIX)) {
+        return () => serveFeatures(path, publicOrigin(env, origin));
       }
       return null;
     }

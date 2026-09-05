@@ -14,6 +14,15 @@ Static JSON served from Cloudflare Workers:
   every tag from `rust-v0.148.0` to `rust-v0.153.4` (`data/codex-schema/`, source snapshots
   included under Apache-2.0). The mirror validates every catalog it publishes against this same
   schema, and clients that add entries of their own should do the same before serving them.
+- **Feature-flag registry for the Codex client** (`/v1/features/codex/latest.json`, per tag at
+  `/<tag>.json`, list at `/index.json`): every flag in the client's `[features]` table per verified
+  tag — key, lifecycle stage (strings match `codex features list` output), default value, the
+  client's own rustdoc and `/experimental` menu copy, legacy key aliases (`telepathy` →
+  `chronicle`), and cross-tag history (first seen, stage changes) — extracted deterministically
+  from the client's `codex-rs/features` sources (`data/codex-features/`,
+  `scripts/extract-features.mjs`), layered with human-curated Chinese annotations
+  (`annotations.json`, CC-BY-4.0). Consumers should treat this as display enrichment only: the
+  authoritative flag list for a given machine is always its local `codex features list`.
 - **Third-party model profiles for Codex** (`/v1/profiles/codex.json`, _upcoming_): human-curated,
   reviewable source data (reasoning levels and defaults, context window, modalities, tool flags,
   minimal client version) that a client such as [codex-pass](https://codexpass.com) renders locally
@@ -41,6 +50,11 @@ Public host: `https://codex-models.flownet.workers.dev` · Docs: `/` · Discover
 - A Codex client discards the **entire** `/models` response if any single entry fails to parse.
   Third-party profiles are therefore source data, not ready-made catalog entries: the consuming
   client must render and validate them against the schema for the exact client version it serves.
+- Feature-flag `annotations.json` is community-written Chinese commentary grounded in the client's
+  own doc comments and observed behavior — not OpenAI documentation. Entries say so explicitly
+  where a meaning is unconfirmed (e.g. the `psp` acronym). The machine-extracted facts (stage,
+  defaults, official copy) are reproducible from the snapshots under `data/codex-features/sources/`
+  via `scripts/extract-features.mjs`; CI fails if the committed registry drifts from them.
 
 ## Licenses
 

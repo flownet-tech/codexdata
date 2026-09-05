@@ -53,9 +53,11 @@
     <p>
       Static JSON served from Cloudflare Workers: a mirror of the official OpenAI Codex model
       catalog (what the Codex client itself fetches from
-      <code>chatgpt.com/backend-api/codex/models</code>) with snapshots and a change feed, plus
-      (upcoming) curated third-party model profiles that clients render into Codex's
-      <code>ModelInfo</code> format.
+      <code>chatgpt.com/backend-api/codex/models</code>) with snapshots and a change feed, a per-tag
+      registry of the Codex client's feature flags (official facts extracted from the client's own
+      sources, layered with human-curated Chinese annotations), the JSON Schema of Codex's
+      <code>ModelInfo</code>, plus (upcoming) curated third-party model profiles that clients render
+      into Codex's <code>ModelInfo</code> format.
     </p>
     <h2>Endpoints (v1)</h2>
     <table>
@@ -89,6 +91,22 @@
         <td>Models added / removed / changed, newest first.</td>
       </tr>
       <tr>
+        <td><code>/v1/schema/codex-model-info/latest.json</code></td>
+        <td>
+          JSON Schema of the Codex client's <code>ModelInfo</code> rejection rules; per verified tag
+          at <code>/&lt;tag&gt;.json</code>, tag list at <code>/index.json</code>.
+        </td>
+      </tr>
+      <tr>
+        <td><code>/v1/features/codex/latest.json</code></td>
+        <td>
+          Feature-flag registry per verified Codex tag: key, lifecycle stage, default, official
+          rustdoc + /experimental menu copy, legacy aliases (e.g. <code>telepathy</code> →
+          <code>chronicle</code>), cross-tag history, and curated Chinese annotations. Per tag at
+          <code>/&lt;tag&gt;.json</code>, tag list at <code>/index.json</code>.
+        </td>
+      </tr>
+      <tr>
         <td><code>/healthz</code></td>
         <td>200 when the mirror has a catalog fetched within 24h; 503 otherwise.</td>
       </tr>
@@ -109,8 +127,10 @@
     </ul>
     <h2>Licenses</h2>
     <p class="muted">
-      Code: MIT. Profile data: CC-BY-4.0. <code>/v1/codex/*</code> bodies are served as-is from
-      OpenAI; Codex Models grants no license over them.
+      Code: MIT. Profile data, feature-flag registry + annotations: CC-BY-4.0 (derived from
+      openai/codex sources, Apache-2.0, reproduced with LICENSE + NOTICE in the repository).
+      <code>/v1/codex/*</code> bodies are served as-is from OpenAI; Codex Models grants no license
+      over them.
     </p>
   </body>
 </html>

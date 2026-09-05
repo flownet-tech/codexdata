@@ -86,7 +86,7 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
       name: "Codex Models",
       version: "v1",
       description:
-        "Independent mirror of the official OpenAI Codex model catalog (snapshots + change feed); third-party model profiles for the Codex client are upcoming. Not affiliated with OpenAI.",
+        "Independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) and a per-tag registry of the Codex client's feature flags (official facts extracted from client sources + human-curated Chinese annotations); third-party model profiles for the Codex client are upcoming. Not affiliated with OpenAI.",
       endpoints: {
         codex_models: `${origin}/v1/codex/models.json`,
         codex_meta: `${origin}/v1/codex/meta.json`,
@@ -94,6 +94,8 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
         codex_changes: `${origin}/v1/codex/changes.json`,
         codex_model_info_schema: `${origin}/v1/schema/codex-model-info/latest.json`,
         codex_model_info_schema_index: `${origin}/v1/schema/codex-model-info/index.json`,
+        codex_feature_flags: `${origin}/v1/features/codex/latest.json`,
+        codex_feature_flags_index: `${origin}/v1/features/codex/index.json`,
         health: `${origin}/healthz`,
       },
       codex: meta
@@ -110,6 +112,8 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
         profile_data: "CC-BY-4.0 (data/; not published yet)",
         codex_model_info_schema:
           "CC-BY-4.0; derived from openai/codex protocol sources (Apache-2.0, reproduced with LICENSE + NOTICE in the repository)",
+        codex_feature_flags:
+          "CC-BY-4.0 (registry + annotations); derived from openai/codex features sources (Apache-2.0, reproduced with LICENSE + NOTICE in the repository)",
         codex_catalog: "Served as-is from OpenAI; no license granted by Codex Models.",
       },
     },
