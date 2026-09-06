@@ -38,7 +38,7 @@ layer with `public/_headers` — asset requests do not invoke the Worker and are
 runs only for the live mirror (`/v1/codex/*`, backed by KV + a Durable Object + an hourly cron),
 `/v1/index.json`, `/healthz`, `/admin/*`, and JSON 404s on unknown dataset paths.
 
-Public host: `https://codex-models.flownet.workers.dev` · Docs: `/` · Discovery: `/v1/index.json`
+Public host: `https://codexdata.0xinf.net` (legacy `https://codex-models.flownet.workers.dev` kept alive) · Docs: `/` · Discovery: `/v1/index.json`
 
 > **Status: work in progress.** Phase 0 egress probe found that Cloudflare Workers cannot reach
 > `chatgpt.com/backend-api/codex/models` (403 HTML from the edge), while `auth.openai.com` is

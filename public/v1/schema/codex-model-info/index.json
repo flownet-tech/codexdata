@@ -2,36 +2,36 @@
   "schema": "codex-model-info",
   "latest": {
     "tag": "rust-v0.153.4",
-    "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/latest.json"
+    "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/latest.json"
   },
   "verified_tags": [
     {
       "tag": "rust-v0.148.0",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.148.0.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.148.0.json"
     },
     {
       "tag": "rust-v0.149.0",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.149.0.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.149.0.json"
     },
     {
       "tag": "rust-v0.150.0",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.150.0.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.150.0.json"
     },
     {
       "tag": "rust-v0.151.0",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.151.0.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.151.0.json"
     },
     {
       "tag": "rust-v0.152.0",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.152.0.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.152.0.json"
     },
     {
       "tag": "rust-v0.153.1",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.153.1.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.153.1.json"
     },
     {
       "tag": "rust-v0.153.4",
-      "url": "https://codex-models.flownet.workers.dev/v1/schema/codex-model-info/rust-v0.153.4.json"
+      "url": "https://codexdata.0xinf.net/v1/schema/codex-model-info/rust-v0.153.4.json"
     }
   ],
   "source_files": [
