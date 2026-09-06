@@ -8,6 +8,7 @@
     "total": 129,
     "annotated": 129,
     "locales": {
+      "en": 1,
       "zh": 129
     }
   },
@@ -365,6 +366,11 @@
       "annotation": {
         "aka": "Computer History",
         "i18n": {
+          "en": {
+            "title": "Computer History",
+            "summary": "Enables the Chronicle sidecar that passively captures screen context into memories.",
+            "note": "This is the flag behind “Computer History” in the ChatGPT desktop app; its earlier internal codename was telepathy (see legacy_aliases)."
+          },
           "zh": {
             "title": "电脑使用历史（Computer History）",
             "summary": "启用 Chronicle 边车进程，被动记录屏幕上下文形成记忆。",
