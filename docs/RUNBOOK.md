@@ -82,8 +82,9 @@
      instead. Diff `legacy.rs` too; it has been identical across tags so far and lives once at
      `sources/legacy.rs`.
   2. Add the tag to `verified_tags` + `latest` in `data/codex-features/tags.json`, then run
-     `node scripts/extract-features.mjs` to regenerate `registry.json`. The parser fails loudly if
-     upstream changed the table's shape — extend it, don't hand-edit the registry.
+     `node scripts/extract-features.mjs` to regenerate `registry.json` and `pnpm build:static` to
+     regenerate the served files under `public/v1/`. The parser fails loudly if upstream changed
+     the table's shape — extend it, don't hand-edit the registry.
   3. `pnpm validate` prints any flags at the new tag that lack a Chinese annotation; add them to
      `data/codex-features/annotations.json` (coverage gaps warn but do not fail CI).
   4. `pnpm check`, deploy.

@@ -98,6 +98,16 @@ const extract = spawnSync(
 if (extract.status === 0) ok("features: registry.json matches extractor output");
 else fail(`features: registry.json out of date\n${extract.stderr || extract.stdout}`.trim());
 
+// public/ 下的静态数据集产物（features / schema / _headers）同样必须与数据源一致。
+const staticBuild = spawnSync(
+  process.execPath,
+  [join(root, "scripts", "build-static.mjs"), "--check"],
+  { encoding: "utf8" },
+);
+if (staticBuild.status === 0) ok("static: public/ dataset artifacts match build output");
+else
+  fail(`static: public/ artifacts out of date\n${staticBuild.stderr || staticBuild.stdout}`.trim());
+
 const registry = readJson(join(featuresDir, ftags.registry));
 const annotations = readJson(join(featuresDir, ftags.annotations));
 const annotationsSchema = readJson(join(featuresDir, "annotations.schema.json"));

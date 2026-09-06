@@ -3,11 +3,13 @@ import { describe, expect, it } from "vitest";
 import schema from "../data/codex-schema/codex-model-info.schema.json";
 import tags from "../data/codex-schema/tags.json";
 
+// 这些端点是 build-static.mjs 预生成的静态资产（资产请求不计 Worker 调用）；
+// 只有未命中（未知 tag / 打错路径）才落到 Worker 的 JSON 404 兜底。
 const BASE = "https://codex-models.test/v1/schema/codex-model-info";
 // 链接按 wrangler var CODEX_MODELS_PUBLIC_ORIGIN 拼（与 /v1/index.json 一致），不是请求的 host。
 const PUBLIC = `${env.CODEX_MODELS_PUBLIC_ORIGIN}/v1/schema/codex-model-info`;
 
-describe("/v1/schema/codex-model-info", () => {
+describe("/v1/schema/codex-model-info (static assets)", () => {
   it("serves the schema at latest.json and at every verified tag, with ETag + 304", async () => {
     const latest = await SELF.fetch(`${BASE}/latest.json`);
     expect(latest.status).toBe(200);
@@ -15,13 +17,13 @@ describe("/v1/schema/codex-model-info", () => {
     expect(latest.headers.get("access-control-allow-origin")).toBe("*");
     expect(latest.headers.get("cache-control")).toContain("public");
     const etag = latest.headers.get("etag");
-    expect(etag).toMatch(/^"schema-[0-9a-f]{32}"$/);
+    expect(etag).toBeTruthy();
     expect(await latest.json()).toEqual(schema);
 
     for (const tag of tags.verified_tags) {
       const res = await SELF.fetch(`${BASE}/${tag}.json`);
       expect(res.status, tag).toBe(200);
-      expect(res.headers.get("etag"), tag).toBe(etag);
+      expect(await res.json(), tag).toEqual(schema);
     }
 
     const conditional = await SELF.fetch(`${BASE}/latest.json`, {
@@ -30,7 +32,7 @@ describe("/v1/schema/codex-model-info", () => {
     expect(conditional.status).toBe(304);
   });
 
-  it("lists verified tags at index.json and 404s unknown tags", async () => {
+  it("lists verified tags at index.json; unknown tags fall through to the Worker's JSON 404", async () => {
     const index = await SELF.fetch(`${BASE}/index.json`);
     expect(index.status).toBe(200);
     const body = (await index.json()) as {
@@ -41,7 +43,12 @@ describe("/v1/schema/codex-model-info", () => {
     expect(body.verified_tags.map((t) => t.tag)).toEqual(tags.verified_tags);
     expect(body.latest.url).toBe(`${PUBLIC}/latest.json`);
 
-    for (const bad of ["rust-v0.1.0.json", "v0.153.4.json", "latest", "../x.json"]) {
+    const unknown = await SELF.fetch(`${BASE}/rust-v0.1.0.json`);
+    expect(unknown.status).toBe(404);
+    const error = (await unknown.json()) as { error: { type: string } };
+    expect(error.error.type).toBe("unknown_dataset_path");
+
+    for (const bad of ["v0.153.4.json", "latest", "../x.json"]) {
       const res = await SELF.fetch(`${BASE}/${bad}`);
       expect(res.status, bad).toBe(404);
     }
