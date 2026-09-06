@@ -2,11 +2,11 @@
 // 校验 data/codex-schema：schema 本身可编译；tags.json 里每个 tag 的源码快照存在；
 // 快照里的 bundled models.json（Codex 二进制自带目录）必须通过 schema。
 // 另校验 data/codex-features：源码快照齐全；registry.json 与提取脚本输出一致（确定性）；
-// annotations.json 过自身 schema 且每个键都真实存在于注册表。
+// annotations/ 逐文件过 schema、文件名与 key 一致、key 真实存在于注册表。
 // Node ≥ 22，与 Worker 用同一个校验器（@cfworker/json-schema），保证两边对"合法"的定义一致。
 
 import { spawnSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Validator } from "@cfworker/json-schema";
@@ -109,32 +109,63 @@ else
   fail(`static: public/ artifacts out of date\n${staticBuild.stderr || staticBuild.stdout}`.trim());
 
 const registry = readJson(join(featuresDir, ftags.registry));
-const annotations = readJson(join(featuresDir, ftags.annotations));
+// 人工注释：每旗标一个文件（annotations/<key>.json）。逐文件校验：JSON 合法、过 schema、
+// key 与文件名一致、key 真实存在于注册表（防拼错）。
 const annotationsSchema = readJson(join(featuresDir, "annotations.schema.json"));
 const annValidator = new Validator(annotationsSchema, "2020-12", false);
-const annResult = annValidator.validate(annotations);
-if (annResult.valid) ok("features: annotations.json validates against its schema");
-else {
-  const first = annResult.errors
-    .slice()
-    .sort((a, b) => b.instanceLocation.length - a.instanceLocation.length)[0];
-  fail(`features: annotations.json rejected: ${first.instanceLocation} ${first.error}`);
-}
-
 const knownKeys = new Set(Object.keys(registry.history));
-const phantom = Object.keys(annotations).filter((key) => !knownKeys.has(key));
-if (phantom.length > 0) fail(`features: annotations for unknown flags: ${phantom.join(", ")}`);
-else ok(`features: all ${Object.keys(annotations).length} annotation keys exist in the registry`);
+const annDir = join(featuresDir, ftags.annotations);
+const annotations = {};
+let annBad = 0;
+for (const name of readdirSync(annDir).sort()) {
+  const reject = (message) => {
+    fail(`features: annotations/${name}: ${message}`);
+    annBad += 1;
+  };
+  if (!name.endsWith(".json")) {
+    reject("不是 .json 文件");
+    continue;
+  }
+  let entry;
+  try {
+    entry = readJson(join(annDir, name));
+  } catch (error) {
+    reject(`不是合法 JSON: ${error.message}`);
+    continue;
+  }
+  const result = annValidator.validate(entry);
+  if (!result.valid) {
+    const first = result.errors
+      .slice()
+      .sort((a, b) => b.instanceLocation.length - a.instanceLocation.length)[0];
+    reject(`schema 拒绝: ${first.instanceLocation} ${first.error}`);
+    continue;
+  }
+  if (`${entry.key}.json` !== name) {
+    reject(`key \`${entry.key}\` 与文件名不一致`);
+    continue;
+  }
+  if (!knownKeys.has(entry.key)) {
+    reject(`旗标 \`${entry.key}\` 不存在于注册表（拼错了？）`);
+    continue;
+  }
+  annotations[entry.key] = entry;
+}
+if (annBad === 0)
+  ok(
+    `features: ${Object.keys(annotations).length} annotation files validate (schema + filename + registry key)`,
+  );
 
 const latestSnapshot = ftags.snapshot_aliases[ftags.latest] ?? ftags.latest;
 const latestFlags = registry.tags[latestSnapshot].flags;
-const unannotated = latestFlags.filter((flag) => !(flag.key in annotations)).map((f) => f.key);
+const missingZh = latestFlags.filter((flag) => !annotations[flag.key]?.i18n?.zh).map((f) => f.key);
 // 新 tag 引入新旗标时注释会暂缺：只提示不失败（缺口是常态，UI 侧按未收录降级）。
-if (unannotated.length > 0)
+if (missingZh.length > 0)
   console.log(
-    `⚠ features: ${unannotated.length} flag(s) at ${ftags.latest} not yet annotated: ${unannotated.join(", ")}`,
+    `⚠ features: ${missingZh.length} flag(s) at ${ftags.latest} lack a zh annotation: ${missingZh.join(", ")}`,
   );
-else ok(`features: every flag at ${ftags.latest} annotated (${latestFlags.length} flags)`);
+else
+  ok(`features: every flag at ${ftags.latest} has a zh annotation (${latestFlags.length} flags)`);
 
 if (failures > 0) {
   console.error(`${failures} failure(s)`);

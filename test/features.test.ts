@@ -1,6 +1,5 @@
 import { SELF, env } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
-import annotations from "../data/codex-features/annotations.json";
 import registry from "../data/codex-features/registry.json";
 import tags from "../data/codex-features/tags.json";
 
@@ -19,14 +18,17 @@ interface Flag {
   experimental: { name: string; menu_description: string; announcement: string | null } | null;
   legacy_aliases: string[];
   history: { first_seen: string; last_seen: string } | null;
-  annotation: { title_zh: string; summary_zh: string; aka?: string } | null;
+  annotation: {
+    aka?: string;
+    i18n: Record<string, { title: string; summary: string; note?: string; risk?: string }>;
+  } | null;
 }
 
 interface Payload {
   dataset: string;
   snapshot_tag: string;
   applies_to: string[];
-  counts: { total: number; annotated: number };
+  counts: { total: number; annotated: number; locales: Record<string, number> };
   flags: Flag[];
 }
 
@@ -66,13 +68,13 @@ describe("/v1/features/codex (static assets)", () => {
     const body = (await (await SELF.fetch(`${BASE}/latest.json`)).json()) as Payload;
     const byKey = new Map(body.flags.map((flag) => [flag.key, flag]));
 
-    // chronicle：官方 doc + 旧代号 telepathy + 人工注释（Computer History）。
+    // chronicle：官方 doc + 旧代号 telepathy + 人工注释（Computer History，i18n.zh）。
     const chronicle = byKey.get("chronicle")!;
     expect(chronicle.stage).toBe("under development");
     expect(chronicle.doc).toContain("Chronicle sidecar");
     expect(chronicle.legacy_aliases).toContain("telepathy");
     expect(chronicle.annotation?.aka).toBe("Computer History");
-    expect(chronicle.annotation?.title_zh).toBeTruthy();
+    expect(chronicle.annotation?.i18n["zh"]?.title).toBeTruthy();
     expect(chronicle.history?.first_seen).toBe("rust-v0.148.0");
 
     // network_proxy：实验菜单官方文案来自机器层。
@@ -91,9 +93,12 @@ describe("/v1/features/codex (static assets)", () => {
       expect(["stable", "experimental", "under development", "deprecated", "removed"]).toContain(
         stage,
       );
-    // 每个旗标都有中文注释（当前全覆盖；将来允许缺口，见 validate.mjs）。
+    // 每个旗标都有中文注释（当前全覆盖；将来允许缺口，见 validate.mjs），
+    // counts.locales 与逐条 i18n 一致。
     expect(body.counts.annotated).toBe(body.counts.total);
-    expect(Object.keys(annotations).length).toBeGreaterThanOrEqual(body.counts.annotated);
+    expect(body.counts.locales["zh"]).toBe(
+      body.flags.filter((flag) => flag.annotation?.i18n["zh"]).length,
+    );
   });
 
   it("serves every verified tag; alias tags share the snapshot body", async () => {

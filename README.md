@@ -20,8 +20,9 @@ Static JSON served from Cloudflare Workers:
   client's own rustdoc and `/experimental` menu copy, legacy key aliases (`telepathy` →
   `chronicle`), and cross-tag history (first seen, stage changes) — extracted deterministically
   from the client's `codex-rs/features` sources (`data/codex-features/`,
-  `scripts/extract-features.mjs`), layered with human-curated Chinese annotations
-  (`annotations.json`, CC-BY-4.0). Consumers should treat this as display enrichment only: the
+  `scripts/extract-features.mjs`), layered with human-curated annotations
+  (one JSON file per flag under `data/codex-features/annotations/`, locale blocks under `i18n` —
+  `zh` today, translations welcome, see `CONTRIBUTING.md`; CC-BY-4.0). Consumers should treat this as display enrichment only: the
   authoritative flag list for a given machine is always its local `codex features list`. Full field
   reference: `docs/DATASETS.md`.
 
@@ -58,8 +59,8 @@ Public host: `https://codexdata.0xinf.net` (legacy `https://codex-models.flownet
 - A Codex client discards the **entire** `/models` response if any single entry fails to parse.
   Third-party profiles are therefore source data, not ready-made catalog entries: the consuming
   client must render and validate them against the schema for the exact client version it serves.
-- Feature-flag `annotations.json` is community-written Chinese commentary grounded in the client's
-  own doc comments and observed behavior — not OpenAI documentation. Entries say so explicitly
+- Feature-flag annotations (`data/codex-features/annotations/`) are community-written commentary
+  grounded in the client's own doc comments and observed behavior — not OpenAI documentation. Entries say so explicitly
   where a meaning is unconfirmed (e.g. the `psp` acronym). The machine-extracted facts (stage,
   defaults, official copy) are reproducible from the snapshots under `data/codex-features/sources/`
   via `scripts/extract-features.mjs`; CI fails if the committed registry drifts from them.

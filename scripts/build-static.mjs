@@ -41,7 +41,19 @@ const files = new Map();
   const featuresDir = join(root, "data", "codex-features");
   const tags = readJson(join(featuresDir, "tags.json"));
   const registry = readJson(join(featuresDir, tags.registry));
-  const annotations = readJson(join(featuresDir, tags.annotations));
+  // 人工注释：每旗标一个独立文件（annotations/<key>.json，社区可贡献翻译），构建时汇总。
+  const annotations = {};
+  const annDir = join(featuresDir, tags.annotations);
+  for (const name of readdirSync(annDir).sort()) {
+    if (!name.endsWith(".json")) continue;
+    const entry = readJson(join(annDir, name));
+    if (`${entry.key}.json` !== name)
+      throw new Error(`annotations/${name}: key \`${entry.key}\` 与文件名不一致`);
+    annotations[entry.key] = {
+      ...(entry.aka ? { aka: entry.aka } : {}),
+      i18n: Object.fromEntries(Object.entries(entry.i18n).sort(([a], [b]) => (a < b ? -1 : 1))),
+    };
+  }
   const snapshotOf = (tag) => tags.snapshot_aliases[tag] ?? tag;
 
   const payloadBySnapshot = new Map();
@@ -58,6 +70,12 @@ const files = new Map();
       history: registry.history[flag.key] ?? null,
       annotation: annotations[flag.key] ?? null,
     }));
+    const localeCounts = {};
+    for (const flag of flags) {
+      for (const locale of Object.keys(flag.annotation?.i18n ?? {})) {
+        localeCounts[locale] = (localeCounts[locale] ?? 0) + 1;
+      }
+    }
     payloadBySnapshot.set(
       snapshotTag,
       pretty({
@@ -67,6 +85,9 @@ const files = new Map();
         counts: {
           total: flags.length,
           annotated: flags.filter((flag) => flag.annotation !== null).length,
+          locales: Object.fromEntries(
+            Object.entries(localeCounts).sort(([a], [b]) => (a < b ? -1 : 1)),
+          ),
         },
         flags,
         source: {

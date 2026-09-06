@@ -1,6 +1,6 @@
 {
   "registry": "registry.json",
-  "annotations": "annotations.json",
+  "annotations": "annotations/",
   "latest": "rust-v0.153.4",
   "verified_tags": [
     "rust-v0.148.0",
@@ -18,6 +18,7 @@
   "notes": [
     "The registry is extracted per tag from the client's own feature table (`pub const FEATURES` in codex-rs/features/src/lib.rs): key, lifecycle stage, default value, the rustdoc comment on the Feature enum variant, and — for experimental-stage flags — OpenAI's own /experimental menu name, description, and announcement copy.",
     "Stage strings match `codex features list` output exactly: stable, experimental, under development, deprecated, removed.",
+    "Human-curated annotations live one file per flag under annotations/ (`<key>.json`), locale blocks under i18n (see annotations.schema.json); community translations welcome — see CONTRIBUTING.md.",
     "rust-v0.153.1: lib.rs byte-identical to rust-v0.153.4; only the 0.153.4 snapshot is kept (see snapshot_aliases).",
     "legacy.rs is byte-identical across all verified tags and is kept once at sources/legacy.rs; it maps legacy config keys (e.g. `telepathy`, `connectors`) to canonical flags.",
     "history.first_seen is bounded by the earliest verified tag (rust-v0.148.0): a flag listed as first seen there may well predate it.",
