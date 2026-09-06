@@ -1,4 +1,4 @@
-# Codex Models
+# CodexData
 
 **Not affiliated with, endorsed by, or maintained by OpenAI.** "Codex" refers to OpenAI's Codex
 client; this project is an independent, open mirror and dataset for it.
@@ -54,7 +54,7 @@ Public host: `https://codexdata.0xinf.net` (legacy `https://codex-models.flownet
   successfully fetched catalog and `/healthz` turns 503.
 - The catalog reflects that one account's plan/rollout view (`meta.json` → `source.plan_label`).
 - `/v1/codex/*` bodies include OpenAI's model instructions verbatim (the Codex client requires
-  them). They are relayed as-is; Codex Models grants no license over them.
+  them). They are relayed as-is; CodexData grants no license over them.
 - A Codex client discards the **entire** `/models` response if any single entry fails to parse.
   Third-party profiles are therefore source data, not ready-made catalog entries: the consuming
   client must render and validate them against the schema for the exact client version it serves.

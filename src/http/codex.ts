@@ -83,7 +83,7 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
   const meta = await readMeta(env);
   return jsonResponse(
     {
-      name: "Codex Models",
+      name: "CodexData",
       version: "v1",
       description:
         "Independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) and a per-tag registry of the Codex client's feature flags (official facts extracted from client sources + human-curated Chinese annotations); third-party model profiles for the Codex client are upcoming. Not affiliated with OpenAI.",
@@ -114,7 +114,7 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
           "CC-BY-4.0; derived from openai/codex protocol sources (Apache-2.0, reproduced with LICENSE + NOTICE in the repository)",
         codex_feature_flags:
           "CC-BY-4.0 (registry + annotations); derived from openai/codex features sources (Apache-2.0, reproduced with LICENSE + NOTICE in the repository)",
-        codex_catalog: "Served as-is from OpenAI; no license granted by Codex Models.",
+        codex_catalog: "Served as-is from OpenAI; no license granted by CodexData.",
       },
     },
     { cacheControl: CACHE_LIVE },

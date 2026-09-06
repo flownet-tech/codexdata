@@ -1,8 +1,8 @@
 {
-  "name": "codex-models",
+  "name": "codexdata",
   "version": "0.1.0",
   "private": true,
-  "description": "Codex Models \u2014 independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) plus curated third-party model profiles for the Codex client, served as static JSON from Cloudflare Workers. Not affiliated with OpenAI.",
+  "description": "CodexData \u2014 independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) plus curated third-party model profiles for the Codex client, served as static JSON from Cloudflare Workers. Not affiliated with OpenAI.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.12.3",

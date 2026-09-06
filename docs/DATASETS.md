@@ -1,6 +1,6 @@
 # Datasets
 
-Reference for the static datasets served by Codex Models. Everything on this page is **pregenerated
+Reference for the static datasets served by CodexData. Everything on this page is **pregenerated
 into `public/` by `scripts/build-static.mjs` and served by the Workers static-asset layer** — asset
 requests do not invoke the Worker and are free; the Worker only runs for the live catalog mirror
 (`/v1/codex/*`, `/v1/index.json`, `/healthz`, `/admin/*`) and for JSON 404s on unknown dataset

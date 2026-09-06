@@ -1,4 +1,4 @@
-// Codex Models Worker 入口：读路径（KV → 边缘缓存）、管理路径、定时同步。
+// CodexData Worker 入口：读路径（KV → 边缘缓存）、管理路径、定时同步。
 // 纯静态数据集（/v1/features/*、/v1/schema/*）不在这里：它们由 scripts/build-static.mjs
 // 预生成进 public/，走 Workers 静态资源层直出（资产请求不计 Worker 调用，零请求费）；
 // 只有资产未命中（未知 tag / 打错路径）才会落到本 Worker，返回 JSON 404 指路。
