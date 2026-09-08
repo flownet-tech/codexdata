@@ -17,8 +17,8 @@
     "bindings": [{ "name": "SYNC", "class_name": "SyncCoordinator" }],
   },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SyncCoordinator"] }],
-  // 每小时第 7 分钟同步一次官方目录（token 只在临过期时刷新）。
-  "triggers": { "crons": ["7 * * * *"] },
+  // external 模式由 GitHub Actions 每小时同步；空列表在部署时移除旧 Worker 计划。
+  "triggers": { "crons": [] },
   // 对外正式域名 codexdata.0xinf.net（0xinf.net zone 与本 Worker 同账号）。
   // workers.dev 地址保留，老引用（codex-pass、GitHub Actions 的 CODEX_MODELS_ORIGIN）不断。
   "routes": [{ "pattern": "codexdata.0xinf.net", "custom_domain": true }],

@@ -66,6 +66,11 @@
 - **Status**: `curl -H "Authorization: Bearer $ADMIN_TOKEN" https://codex-models.flownet.workers.dev/admin/status`
   (seeded, plan label, last refresh, access-token expiry, active lease, recent runs).
 - **Manual sync**: `gh workflow run sync.yml`.
+- **Schedule**: in the default `SYNC_MODE=external`, only `.github/workflows/sync.yml` schedules
+  catalog sync, hourly at minute 7 UTC. `triggers.crons` is explicitly empty so deploying removes
+  any old Worker cron. If Worker egress becomes usable and you switch to `SYNC_MODE=worker`,
+  explicitly set `triggers.crons` to `["7 * * * *"]` for hourly sync and disable the external
+  agent schedule. Manual Worker sync remains available through `POST /admin/sync` in that mode.
 - **Health**: `/healthz` is 200 when a catalog exists and the last successful check is < 24 h old and
   there is no permanent token failure; `monitor.yml` opens/updates an `ops` issue otherwise.
 - **Permanent token failure** (`permanent_failure` in status; `/healthz` 503; last-good catalog
