@@ -2,7 +2,7 @@
 
 ## Topology
 
-- **Worker `codex-models`** (Cloudflare account "Project 0xinf - FLOWNET"): serves `/v1/*` from KV via the
+- **Worker `codex-models`** (Cloudflare account "FLOWNET APPS DEV", the one that owns the `cp.dev` zone; the earlier deployment in "Project 0xinf - FLOWNET" serves `codexdata.0xinf.net` and is frozen): serves `/v1/*` from KV via the
   edge cache; hosts the `SyncCoordinator` Durable Object (SQLite) that owns the dedicated account's
   OAuth tokens (AES-GCM encrypted with the `REFRESH_TOKEN_KEK` secret) and is the only writer to KV.
 - **Sync agent** (`scripts/sync-agent.mjs`, run hourly by `.github/workflows/sync.yml`): leases a
@@ -39,7 +39,7 @@
    (`gh secret set CODEX_MODELS_ADMIN_TOKEN` reads from stdin).
 3. Deploy: `pnpm run deploy` (first deploy auto-creates the KV namespace and the DO migration).
    **Custom domain `api.codexpass.com`**: the `codexpass.com` zone is on Cloudflare but **not in
-   the "Project 0xinf - FLOWNET" account** that hosts the Worker (deploy fails with code 10082
+   the "FLOWNET APPS DEV" account** that hosts the Worker and the `cp.dev` zone (deploy fails with code 10082
    "Can't infer zone from route"). Until that is fixed the public origin is
    `https://codex-models.flownet.workers.dev` (set as GitHub variable `CODEX_MODELS_ORIGIN` and as
    `CODEX_MODELS_PUBLIC_ORIGIN` in `wrangler.jsonc`). To get the custom domain, either move the zone
