@@ -13,6 +13,7 @@ import {
   serveSnapshot,
   serveSnapshotsIndex,
 } from "./http/codex";
+import { COMPAT_PATH, serveCompat } from "./http/compat";
 import { errorResponse, headOf, notModifiedIfMatches, preflight } from "./http/headers";
 
 export { SyncCoordinator } from "./sync/coordinator";
@@ -99,6 +100,8 @@ function routeApi(env: Env, path: string, origin: string): (() => Promise<Respon
       return () => serveSnapshotsIndex(env);
     case "/v1/codex/changes.json":
       return () => serveChanges(env);
+    case COMPAT_PATH:
+      return () => serveCompat(env, origin);
     default: {
       const snapshot = SNAPSHOT_RE.exec(path);
       if (snapshot) {
