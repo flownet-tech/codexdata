@@ -21,8 +21,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "node scripts/seed.mjs",
-    "validate": "node scripts/validate.mjs",
+    "validate": "node scripts/validate.mjs && node scripts/build-compat.mjs --check",
     "build:static": "node scripts/build-static.mjs",
+    "build:compat": "node scripts/build-compat.mjs",
+    "probe:compat": "node scripts/compat-probe.mjs",
     "check": "pnpm typecheck && pnpm format:check && pnpm validate && pnpm test"
   },
   "devDependencies": {

@@ -3,11 +3,14 @@
 
 import { timingSafeEqualString } from "../sync/crypto";
 import type { IngestInput, SeedInput } from "../sync/coordinator";
+import { publishCompat } from "./compat";
 import { errorResponse, jsonResponse } from "./headers";
 
 const MAX_SEED_BODY_BYTES = 64 * 1024;
 /// ingest 正文 = 官方目录原文（含系统提示词），与 MAX_CATALOG_BYTES 同量级上限。
 const MAX_INGEST_BODY_BYTES = 9 * 1024 * 1024;
+/// compat 正文 = build-compat.mjs 产物，正常几十 KB。
+const MAX_COMPAT_BODY_BYTES = 512 * 1024;
 
 function authorized(request: Request, env: Env): boolean {
   const header = request.headers.get("authorization") ?? "";
@@ -69,6 +72,11 @@ export async function handleAdmin(request: Request, env: Env, path: string): Pro
         );
         if (body instanceof Response) return body;
         return jsonResponse(await stub.release(body));
+      }
+      case "/admin/compat/publish": {
+        const body = await readJsonBody<unknown>(request, MAX_COMPAT_BODY_BYTES);
+        if (body instanceof Response) return body;
+        return publishCompat(env, body);
       }
       default:
         return errorResponse(404, "not found", "not_found");

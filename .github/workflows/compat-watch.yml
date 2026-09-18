@@ -1,0 +1,90 @@
+name: Compat watch
+
+# Codex CLI 发版监控：每 6 小时对照 npm dist-tags（latest / alpha），有未探测过的版本就
+# 下载官方二进制跑兼容探针（scripts/compat-probe.mjs），产出提交回仓库并热发布到
+# data.cp.dev（KV，不需要重新部署 Worker）。发现回归（托管键从二进制里消失、或
+# Codex Pass 托管形状的 config.toml 整份拒载）→ 开置顶 issue 等人工判读；人工结论
+# 落到 data/codex-compat/tracked.json（statusOverride/action）或 advisories/。
+on:
+  schedule:
+    - cron: "11 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "只探测这个 Codex 版本（留空 = npm dist-tags 的 latest+alpha）"
+        required: false
+      force:
+        description: "已探测过也重跑（true/false）"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: codex-compat-watch
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: ".node-version"
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - name: Probe new Codex versions
+        id: probe
+        run: |
+          args=()
+          [ -n "${{ inputs.version }}" ] && args+=(--version "${{ inputs.version }}")
+          [ "${{ inputs.force }}" = "true" ] && args+=(--force)
+          set +e
+          node scripts/compat-probe.mjs "${args[@]}" | tee probe.log
+          status=${PIPESTATUS[0]}
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          # 0 = 无新版本或探测通过；20 = 发现回归（仍然继续提交+发布，让客户端尽快看到事实）。
+          [ "$status" = "0" ] || [ "$status" = "20" ] || exit "$status"
+      - name: Rebuild compat payload
+        run: node scripts/build-compat.mjs
+      - name: Commit probe results
+        id: commit
+        run: |
+          git add data/codex-compat/probes public/v1/compat
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "no new probe data"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "data(compat): probe new Codex versions"
+            git pull --rebase origin main
+            git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish to data.cp.dev (KV hot update)
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          CODEX_MODELS_ORIGIN: ${{ vars.CODEX_MODELS_ORIGIN || 'https://data.cp.dev' }}
+          CODEX_MODELS_ADMIN_TOKEN: ${{ secrets.CODEX_MODELS_ADMIN_TOKEN }}
+        run: node scripts/publish-compat.mjs
+      - name: Open or update regression issue
+        if: steps.probe.outputs.status == '20'
+        run: |
+          title="Codex compat regression detected"
+          body=$(printf 'compat-probe found regressions at %s.\n\n```\n%s\n```\n\nTriage: confirm in data/codex-compat/tracked.json (statusOverride/action) or add an advisory, then re-run build-compat + publish.\n' \
+            "$(date -u +%FT%TZ)" "$(grep -E 'probing|wrote|!!' probe.log | head -40)")
+          existing=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body "$body"
+          else
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body "$body" --label "ops"
+          fi
