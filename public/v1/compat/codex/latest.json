@@ -184,6 +184,12 @@
       "table": "desktop",
       "note": "38 managed desktop prefs (camelCase); read by the ChatGPT.app desktop client (asar), not present in the CLI binary — cannot be probed here",
       "status": "unprobed"
+    },
+    {
+      "key": "updater.autoUpdateEnabled",
+      "table": "daemon",
+      "note": "app-server daemon's own auto-update loop: enabled by default, checks every updateIntervalMinutes (default 60) and installs via the official install script — independent of check_for_update_on_startup, which only gates the TUI startup prompt. Compiled into the binary since <=0.153.4 (needle present in every probed version; auto_update_enabled snake_case is NOT in the binary); 0.156 is when the TUI starts routing through the shared daemon by default (top-level --no-daemon escape hatch appears in 0.156.0-alpha). The disable lever for centrally managed fleets; see advisory 2026-09-codex-0156-daemon-auto-update.",
+      "status": "active"
     }
   ],
   "advisories": [
@@ -222,6 +228,42 @@
           "body": "Codex 0.155 開始要求 workspace 後端為 HTTPS，經本機代理接管帳號流量會觸發登入牆。Codex Pass 0.5.2（及 0.4.8）已適配：偵測到 0.155+ 時自動停止接管帳號流量，存取日誌與隱私攔截對帳號類請求不再生效。請先升級 Codex Pass 到 0.5.2 或更高，再升級 Codex。"
         }
       }
+    },
+    {
+      "id": "2026-09-codex-0156-daemon-auto-update",
+      "severity": "warn",
+      "kind": "behavior-change",
+      "status": "open",
+      "clientAction": "none",
+      "affects": {
+        "min": "0.156.0",
+        "max": null
+      },
+      "keys": [
+        "updater.autoUpdateEnabled",
+        "check_for_update_on_startup"
+      ],
+      "links": [
+        "https://github.com/openai/codex"
+      ],
+      "i18n": {
+        "en": {
+          "title": "Codex 0.156: the background daemon auto-updates Codex",
+          "body": "Starting with Codex 0.156, sessions run through a shared background daemon by default, and the daemon has its own auto-update loop: enabled by default, it checks roughly every 60 minutes and installs new Codex versions automatically. check_for_update_on_startup in config.toml only controls the TUI startup prompt — setting it to false does not stop this loop. Teams that manage Codex versions centrally need to set updater.autoUpdateEnabled to false in the daemon state directory's settings.json ($CODEX_HOME/app-server-daemon/settings.json)."
+        },
+        "ja": {
+          "title": "Codex 0.156 以降、バックグラウンド daemon が Codex を自動更新",
+          "body": "Codex 0.156 以降、セッションはデフォルトで共有バックグラウンド daemon 経由で実行され、daemon は独自の自動更新ループを持ちます。デフォルトで有効になっており、約 60 分ごとに更新を確認して新しい Codex を自動インストールします。config.toml の check_for_update_on_startup は TUI 起動時の更新プロンプトのみを制御し、false にしてもこのループは止まりません。Codex のバージョンを集中管理しているチームは、daemon 状態ディレクトリの settings.json（$CODEX_HOME/app-server-daemon/settings.json）で updater.autoUpdateEnabled を false に設定してください。"
+        },
+        "zh": {
+          "title": "Codex 0.156 起后台 daemon 会自动更新 Codex",
+          "body": "Codex 0.156 起默认经由共享后台 daemon 运行，daemon 自带独立的自动更新循环：默认开启，约每 60 分钟检查一次并自动安装新版 Codex。config.toml 的 check_for_update_on_startup 只控制 TUI 启动时的更新提示，即使设为 false 也管不到这条循环。集中管理 Codex 版本的团队需要在 daemon 状态目录的 settings.json（$CODEX_HOME/app-server-daemon/settings.json）里把 updater.autoUpdateEnabled 设为 false。"
+        },
+        "zh-TW": {
+          "title": "Codex 0.156 起背景 daemon 會自動更新 Codex",
+          "body": "Codex 0.156 起預設經由共享背景 daemon 執行，daemon 自帶獨立的自動更新迴圈：預設開啟，約每 60 分鐘檢查一次並自動安裝新版 Codex。config.toml 的 check_for_update_on_startup 只控制 TUI 啟動時的更新提示，即使設為 false 也管不到這條迴圈。集中管理 Codex 版本的團隊需要在 daemon 狀態目錄的 settings.json（$CODEX_HOME/app-server-daemon/settings.json）裡把 updater.autoUpdateEnabled 設為 false。"
+        }
+      }
     }
   ],
   "versions": [
@@ -229,7 +271,7 @@
       "version": "0.153.4",
       "channel": "stable",
       "publishedAt": "2026-09-04T23:25:48Z",
-      "probedAt": "2026-09-18T23:07:50.073Z",
+      "probedAt": "2026-09-19T00:24:52.942Z",
       "platform": "darwin-arm64",
       "configLoad": "ok",
       "regressions": [],
@@ -240,7 +282,7 @@
       "version": "0.154.0",
       "channel": "stable",
       "publishedAt": "2026-09-09T22:35:38Z",
-      "probedAt": "2026-09-18T23:08:02.860Z",
+      "probedAt": "2026-09-19T00:25:07.073Z",
       "platform": "darwin-arm64",
       "configLoad": "ok",
       "regressions": [],
@@ -253,7 +295,7 @@
       "version": "0.155.1",
       "channel": "stable",
       "publishedAt": "2026-09-18T20:03:04Z",
-      "probedAt": "2026-09-18T23:08:17.422Z",
+      "probedAt": "2026-09-19T00:25:21.609Z",
       "platform": "darwin-arm64",
       "configLoad": "ok",
       "regressions": [],
@@ -266,7 +308,7 @@
       "version": "0.156.0-alpha.4",
       "channel": "alpha",
       "publishedAt": "2026-09-18T21:18:45Z",
-      "probedAt": "2026-09-18T23:08:31.532Z",
+      "probedAt": "2026-09-19T00:25:36.863Z",
       "platform": "darwin-arm64",
       "configLoad": "ok",
       "regressions": [],

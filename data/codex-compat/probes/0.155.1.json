@@ -2,7 +2,7 @@
   "version": "0.155.1",
   "channel": "stable",
   "platform": "darwin-arm64",
-  "probedAt": "2026-09-18T23:08:17.422Z",
+  "probedAt": "2026-09-19T00:25:21.609Z",
   "publishedAt": "2026-09-18T20:03:04Z",
   "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.155.1",
   "reportedVersion": "codex-cli 0.155.1",
@@ -37,7 +37,8 @@
     "model_providers.*.experimental_bearer_token": true,
     "model_providers.*.http_headers": true,
     "mcp_servers": true,
-    "analytics.enabled": true
+    "analytics.enabled": true,
+    "updater.autoUpdateEnabled": true
   },
   "deprecations": [
     "` config is no longer supported; use `--profile",

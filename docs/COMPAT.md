@@ -37,6 +37,9 @@ GET https://data.cp.dev/v1/compat/codex/latest.json             （KV 优先，�
   锚定，跨版本稳定。
 - **探不到的**：`[desktop]` 表由 ChatGPT.app 桌面端（asar）读取，不在 CLI 二进制里
   （`probe: "none"`，状态人工维护）；键语义变化（同名不同义）探不出来，靠 advisories。
+- **daemon 表**：`table: "daemon"` 的键不在 config.toml，而在 app-server daemon 状态目录的
+  `settings.json`（`$CODEX_HOME/app-server-daemon/settings.json`）；daemon 与 CLI 是同一个
+  二进制，serde 字段名（camelCase）照常可探。探到只说明机制还在，不说明 daemon 是否在运行。
 
 ## 回归处置
 
