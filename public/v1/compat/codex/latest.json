@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "dataset": "codex-compat",
   "codex": {
-    "latestStable": "0.155.1",
-    "latestAlpha": "0.157.0-alpha.8",
-    "maxProbedStable": "0.155.1"
+    "latestStable": "0.156.0",
+    "latestAlpha": "0.157.0-alpha.9",
+    "maxProbedStable": "0.156.0"
   },
   "keys": [
     {
@@ -305,6 +305,19 @@
       "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.155.1"
     },
     {
+      "version": "0.156.0",
+      "channel": "stable",
+      "publishedAt": "2026-09-22T19:51:01Z",
+      "probedAt": "2026-09-22T21:13:56.513Z",
+      "platform": "linux-x64",
+      "configLoad": "ok",
+      "regressions": [],
+      "deprecations": [
+        "` is deprecated and ignored."
+      ],
+      "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.156.0"
+    },
+    {
       "version": "0.156.0-alpha.14",
       "channel": "alpha",
       "publishedAt": "2026-09-21T04:09:08Z",
@@ -415,6 +428,19 @@
         "esting at the root is no longer supported."
       ],
       "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.8"
+    },
+    {
+      "version": "0.157.0-alpha.9",
+      "channel": "alpha",
+      "publishedAt": "2026-09-22T18:00:16Z",
+      "probedAt": "2026-09-22T21:14:02.571Z",
+      "platform": "linux-x64",
+      "configLoad": "ok",
+      "regressions": [],
+      "deprecations": [
+        "esting at the root is no longer supported."
+      ],
+      "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.9"
     }
   ]
 }
