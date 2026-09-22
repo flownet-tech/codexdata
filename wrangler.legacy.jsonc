@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // 退役部署：旧账号（Project 0xinf - FLOWNET，0738b660…）里的同名 Worker，
+  // 只负责把 codexdata.0xinf.net 与 codex-models.flownet.workers.dev 301 到 data.cp.dev。
+  // 正式实例用 wrangler.jsonc 部署到 FLOWNET APPS DEV，两份配置互不影响。
+  "name": "codex-models",
+  "main": "src/legacy-redirect.ts",
+  "compatibility_date": "2026-08-22",
+  "compatibility_flags": ["nodejs_compat"],
+  // 旧 workers.dev 地址同样重定向。
+  "workers_dev": true,
+  // 刻意不配 assets：静态资源层直出会抢在 Worker 之前响应，/v1/features/* 就不会被重定向。
+  // 绑定保留原有 namespace/class，只为不触发 deleted_classes 迁移（旧实例存量数据原样留着）。
+  "kv_namespaces": [{ "binding": "CODEX_MODELS_KV", "id": "a8376027aa25489e9afe197d83055a58" }],
+  "durable_objects": {
+    "bindings": [{ "name": "SYNC", "class_name": "SyncCoordinator" }],
+  },
+  "triggers": { "crons": [] },
+  "routes": [{ "pattern": "codexdata.0xinf.net", "custom_domain": true }],
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  "vars": {
+    "CODEX_MODELS_PUBLIC_ORIGIN": "https://data.cp.dev",
+    "SYNC_MODE": "external",
+  },
+}
