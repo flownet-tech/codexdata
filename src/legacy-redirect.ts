@@ -5,12 +5,11 @@
 // codex-models Worker 用这份入口重新部署：所有路径 301 到新域名的同路径。
 //
 // 部署用 wrangler.legacy.jsonc（不带 assets——静态资源层会在 Worker 之前直出，
-// 那样 /v1/features/* 之类的路径就绕过了重定向）。DO/KV 绑定保持原样，只为让
-// SyncCoordinator 这个类继续存在，不触发删类迁移，也就不会动旧实例的存量数据。
+// 那样 /v1/features/* 之类的路径就绕过了重定向）。旧实例的 KV 快照与 SyncCoordinator
+// （存着旧账号那条会话的加密 refresh token）已于 2026-09-22 清理，所以这里不再导出
+// 任何 Durable Object，配置里也没有 KV/DO 绑定。
 
 import { CORS_HEADERS, preflight } from "./http/headers";
-
-export { SyncCoordinator } from "./sync/coordinator";
 
 const TARGET_ORIGIN = "https://data.cp.dev";
 

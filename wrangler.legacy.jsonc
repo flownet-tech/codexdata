@@ -10,16 +10,13 @@
   // 旧 workers.dev 地址同样重定向。
   "workers_dev": true,
   // 刻意不配 assets：静态资源层直出会抢在 Worker 之前响应，/v1/features/* 就不会被重定向。
-  // 绑定保留原有 namespace/class，只为不触发 deleted_classes 迁移（旧实例存量数据原样留着）。
-  "kv_namespaces": [{ "binding": "CODEX_MODELS_KV", "id": "a8376027aa25489e9afe197d83055a58" }],
-  "durable_objects": {
-    "bindings": [{ "name": "SYNC", "class_name": "SyncCoordinator" }],
-  },
+  // 2026-09-22 清理：删掉 KV 绑定与 SyncCoordinator（deleted_classes 会一并销毁 DO 存储里的
+  // 加密 refresh token 与运行记录），KV namespace 也单独删除。退役 Worker 从此零绑定。
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["SyncCoordinator"] },
+    { "tag": "v2", "deleted_classes": ["SyncCoordinator"] },
+  ],
   "triggers": { "crons": [] },
   "routes": [{ "pattern": "codexdata.0xinf.net", "custom_domain": true }],
   "observability": { "enabled": true, "head_sampling_rate": 1 },
-  "vars": {
-    "CODEX_MODELS_PUBLIC_ORIGIN": "https://data.cp.dev",
-    "SYNC_MODE": "external",
-  },
 }
