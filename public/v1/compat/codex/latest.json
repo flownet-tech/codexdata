@@ -489,6 +489,17 @@
       "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.157.0-alpha.9"
     },
     {
+      "version": "0.158.0-alpha.10",
+      "channel": "alpha",
+      "publishedAt": "2026-09-24T20:58:11Z",
+      "probedAt": "2026-09-24T21:27:37.282Z",
+      "platform": "linux-x64",
+      "configLoad": "ok",
+      "regressions": [],
+      "deprecations": [],
+      "releaseNotesUrl": "https://github.com/openai/codex/releases/tag/rust-v0.158.0-alpha.10"
+    },
+    {
       "version": "0.158.0-alpha.2",
       "channel": "alpha",
       "publishedAt": "2026-09-23T13:07:10Z",
