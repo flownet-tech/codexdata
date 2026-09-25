@@ -1,0 +1,135 @@
+/* Codex Pass design tokens. HSL channels support macOS 12's WKWebView. */
+:root, .light, [data-mode='light'] {
+  color-scheme: light;
+  --cp-background: 0 0% 100%;
+  --cp-foreground: 0 0% 12%;
+  --cp-shell: 0 0% 97%;
+  --cp-card: 0 0% 100%;
+  --cp-popover: 0 0% 100%;
+  --cp-muted: 0 0% 95%;
+  --cp-muted-foreground: 0 0% 40%;
+  --cp-accent: 0 0% 93%;
+  --cp-primary: 0 0% 12%;
+  --cp-primary-foreground: 0 0% 100%;
+  --cp-border: 0 0% 88%;
+  --cp-input: 0 0% 76%;
+  --cp-ring: 0 0% 35%;
+  --cp-destructive: 0 72% 43%;
+  --cp-success: 151 63% 27%;
+  --cp-success-muted: 145 45% 95%;
+  --cp-warning: 31 90% 30%;
+  --cp-warning-muted: 42 90% 95%;
+  --cp-info: 214 78% 38%;
+  --cp-info-muted: 213 80% 96%;
+  --cp-danger-muted: 0 75% 97%;
+  --cp-radius: .625rem;
+  --cp-radius-panel: 1rem;
+  --cp-radius-small: .375rem;
+  --cp-control-height: 2.25rem;
+  --cp-control-small: 2rem;
+  --cp-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --cp-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --cp-text-xs: .75rem;
+  --cp-text-sm: .875rem;
+  --cp-text-base: 1rem;
+  --cp-space-1: .25rem;
+  --cp-space-2: .5rem;
+  --cp-space-3: .75rem;
+  --cp-space-4: 1rem;
+  --cp-space-6: 1.5rem;
+  --cp-space-8: 2rem;
+  --cp-shadow: 0 8px 32px rgba(0,0,0,.1), 0 1px 4px rgba(0,0,0,.06);
+  --cp-duration: 140ms;
+  --cp-chart-1: 214 72% 46%;
+  --cp-chart-2: 151 58% 34%;
+  --cp-chart-3: 31 85% 42%;
+  --cp-chart-4: 277 55% 50%;
+  --cp-chart-5: 350 66% 47%;
+  --cp-chart-6: 194 70% 35%;
+  --cp-chart-7: 328 64% 44%;
+  --cp-chart-8: 65 70% 30%;
+  --cp-chart-9: 250 58% 49%;
+  --cp-chart-10: 170 65% 30%;
+  --cp-chart-11: 17 75% 43%;
+  --cp-chart-12: 300 46% 43%;
+  --cp-chart-13: 220 38% 45%;
+  --cp-chart-14: 107 52% 33%;
+  --cp-chart-15: 45 80% 33%;
+
+}
+.dark, [data-mode='dark'] {
+  color-scheme: dark;
+  --cp-background: 0 0% 10%;
+  --cp-foreground: 0 0% 94%;
+  --cp-shell: 0 0% 8%;
+  --cp-card: 0 0% 13%;
+  --cp-popover: 0 0% 16%;
+  --cp-muted: 0 0% 17%;
+  --cp-muted-foreground: 0 0% 68%;
+  --cp-accent: 0 0% 22%;
+  --cp-primary: 0 0% 94%;
+  --cp-primary-foreground: 0 0% 10%;
+  --cp-border: 0 0% 25%;
+  --cp-input: 0 0% 40%;
+  --cp-ring: 0 0% 75%;
+  --cp-destructive: 0 84% 72%;
+  --cp-success: 149 53% 66%;
+  --cp-success-muted: 150 27% 15%;
+  --cp-warning: 39 88% 68%;
+  --cp-warning-muted: 32 34% 16%;
+  --cp-info: 211 86% 74%;
+  --cp-info-muted: 214 34% 18%;
+  --cp-danger-muted: 0 31% 18%;
+  --cp-shadow: 0 8px 32px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.2);
+  --cp-chart-1: 214 80% 70%;
+  --cp-chart-2: 151 52% 62%;
+  --cp-chart-3: 31 85% 68%;
+  --cp-chart-4: 277 65% 73%;
+  --cp-chart-5: 350 73% 72%;
+  --cp-chart-6: 194 70% 63%;
+  --cp-chart-7: 328 64% 70%;
+  --cp-chart-8: 65 55% 60%;
+  --cp-chart-9: 250 78% 73%;
+  --cp-chart-10: 170 55% 60%;
+  --cp-chart-11: 17 80% 67%;
+  --cp-chart-12: 300 52% 70%;
+  --cp-chart-13: 220 55% 72%;
+  --cp-chart-14: 107 45% 60%;
+  --cp-chart-15: 45 75% 65%;
+
+}
+@media (prefers-reduced-motion: reduce) { :root { --cp-duration: 0ms; } }
+
+/* Static documentation uses the same tokens and control geometry as the React UI. */
+* { box-sizing: border-box; }
+body { margin: 0; background: hsl(var(--cp-background)); color: hsl(var(--cp-foreground)); font: 15px/1.7 var(--cp-font-sans); -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-underline-offset: 4px; }
+a:hover { color: hsl(var(--cp-muted-foreground)); }
+a:focus-visible, button:focus-visible { outline: 2px solid hsl(var(--cp-ring)); outline-offset: 4px; }
+.docs-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 20px max(24px, calc((100vw - 1120px) / 2)); border-bottom: 1px solid hsl(var(--cp-border)); background: hsl(var(--cp-background)); }
+.docs-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.docs-brand img { width: 28px; height: 28px; }
+.docs-links { display: flex; align-items: center; gap: 20px; font-size: 13px; }
+.docs-links a { text-decoration: none; }
+.docs-theme { display: inline-flex; align-items: center; gap: 8px; min-height: var(--cp-control-height); padding: 6px 12px; border: 1px solid hsl(var(--cp-border)); border-radius: var(--cp-radius); background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.docs-theme:hover { background: hsl(var(--cp-muted)); }
+main { max-width: 1000px; margin: 0 auto; padding: 64px 32px 80px; }
+.docs-eyebrow { color: hsl(var(--cp-muted-foreground)); font-size: 13px; font-weight: 500; margin: 0 0 12px; }
+h1 { font-size: clamp(32px, 4vw, 44px); line-height: 1.15; letter-spacing: -.04em; font-weight: 600; margin: 0 0 20px; }
+h2 { font-size: 20px; line-height: 1.4; font-weight: 600; letter-spacing: -.02em; margin: 48px 0 16px; }
+p { max-width: 76ch; }
+.muted { color: hsl(var(--cp-muted-foreground)); }
+code, pre { font-family: var(--cp-font-mono); font-size: .85em; }
+code { overflow-wrap: anywhere; }
+pre { background: hsl(var(--cp-muted)); padding: 16px; overflow-x: auto; border-radius: var(--cp-radius); }
+.docs-table { overflow-x: auto; border: 1px solid hsl(var(--cp-border)); border-radius: var(--cp-radius-panel); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 16px 20px; vertical-align: top; border-bottom: 1px solid hsl(var(--cp-border)); }
+th { background: hsl(var(--cp-shell)); color: hsl(var(--cp-muted-foreground)); font-size: 12px; font-weight: 500; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { width: 38%; }
+tr:hover td { background: hsl(var(--cp-muted) / .45); }
+.docs-footer { border-top: 1px solid hsl(var(--cp-border)); padding: 24px; text-align: center; font-size: 12px; color: hsl(var(--cp-muted-foreground)); }
+.skip-link { position: absolute; top: -80px; left: 20px; background: hsl(var(--cp-background)); padding: 12px; z-index: 1; }
+.skip-link:focus { top: 8px; }
+@media (max-width: 640px) { .docs-nav { padding: 16px; gap: 16px; flex-wrap: wrap; } .docs-links { gap: 16px; } main { padding: 40px 20px 56px; } th, td { padding: 12px; } }

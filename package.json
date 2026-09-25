@@ -2,7 +2,7 @@
   "name": "codexdata",
   "version": "0.1.0",
   "private": true,
-  "description": "CodexData \u2014 independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) plus curated third-party model profiles for the Codex client, served as static JSON from Cloudflare Workers. Not affiliated with OpenAI.",
+  "description": "CodexData — independent mirror of the official OpenAI Codex model catalog (snapshots + change feed) plus curated third-party model profiles for the Codex client, served as static JSON from Cloudflare Workers. Not affiliated with OpenAI.",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.12.3",
@@ -21,11 +21,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "seed": "node scripts/seed.mjs",
-    "validate": "node scripts/validate.mjs && node scripts/build-compat.mjs --check",
+    "validate": "node scripts/validate.mjs && node scripts/build-compat.mjs --check && node scripts/build-ui.mjs --check",
     "build:static": "node scripts/build-static.mjs",
     "build:compat": "node scripts/build-compat.mjs",
     "probe:compat": "node scripts/compat-probe.mjs",
-    "check": "pnpm typecheck && pnpm format:check && pnpm validate && pnpm test"
+    "check": "pnpm typecheck && pnpm format:check && pnpm validate && pnpm test",
+    "build:ui": "node scripts/build-ui.mjs"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.22.0",
@@ -35,6 +36,7 @@
     "wrangler": "^4.129.0"
   },
   "dependencies": {
-    "@cfworker/json-schema": "^4.1.1"
+    "@cfworker/json-schema": "^4.1.1",
+    "@codexpass/tokens": "file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz"
   }
 }
