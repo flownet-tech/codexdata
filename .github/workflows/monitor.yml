@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   health:
-    runs-on: ubuntu-latest
+    runs-on: avrea-ubuntu-latest-2-vcpu
     timeout-minutes: 5
     env:
       CODEX_MODELS_ORIGIN: ${{ vars.CODEX_MODELS_ORIGIN || 'https://codex-models.flownet.workers.dev' }}
