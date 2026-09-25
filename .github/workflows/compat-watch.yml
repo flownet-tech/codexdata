@@ -55,6 +55,8 @@ jobs:
           [ "$status" = "0" ] || [ "$status" = "20" ] || exit "$status"
       - name: Rebuild compat payload
         run: node scripts/build-compat.mjs
+      - name: Format probe data
+        run: pnpm exec prettier --write data/codex-compat/probes
       - name: Commit probe results
         id: commit
         run: |

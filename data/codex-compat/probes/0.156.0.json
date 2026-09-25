@@ -60,9 +60,7 @@
     "ull-history hydration is deprecated for paginated threads; omit `include",
     "ull-history hydration is deprecated for paginated threads; use `exclude"
   ],
-  "deprecationDiff": [
-    "` is deprecated and ignored."
-  ],
+  "deprecationDiff": ["` is deprecated and ignored."],
   "configLoad": "ok",
   "configLoadExit": 0,
   "configLoadStderr": "WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir \"/tmp\" (codex_home: AbsolutePathBuf(\"/tmp/codex-compat-home-uKL3DZ\"))",
