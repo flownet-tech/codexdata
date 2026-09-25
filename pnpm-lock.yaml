@@ -12,12 +12,15 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       '@codexpass/tokens':
-        specifier: file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz
-        version: file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz
+        specifier: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz
+        version: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz
     devDependencies:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.22.0
         version: 0.22.0(@vitest/runner@4.1.11)(@vitest/snapshot@4.1.11)(vitest@4.1.11(vite@8.2.2(esbuild@0.28.1)))
+      '@playwright/test':
+        specifier: 1.63.0
+        version: 1.63.0
       prettier:
         specifier: ^3.9.6
         version: 3.9.6
@@ -116,9 +119,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@codexpass/tokens@file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz':
-    resolution: {integrity: sha512-jbNAb/DnsTB1k0DKO7T4VSjpg1H926AmYsJ+X3yDXQQDI1ndX3tvAgXrS1gji8ffpNSoAur92ioS3LlMvQXBZg==, tarball: file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz}
-    version: 0.1.0
+  '@codexpass/tokens@file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz':
+    resolution: {integrity: sha512-GG1JgRT9eoTSJ4BDqnztcTcR7ybPckVdFQonCAopUhR69ZHUBdarDPvuQm/YiKaZq89kVGN/S6PmnbAwgkWErQ==, tarball: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz}
+    version: 0.2.0
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -442,6 +445,11 @@ packages:
   '@oxc-project/types@0.148.0':
     resolution: {integrity: sha512-Nm4s/jB+4FpFsPhWGEC4h7rzksesmtnMXomo6rCMcg/b8zLQuOziRgkCS1fxDCXOlJB/6Q8oABOZ/OP6RIPj9A==}
 
+  '@playwright/test@1.63.0':
+    resolution: {integrity: sha512-oxMK4vllB9RK5NQ2l1pq1IfOf2AvnEuj/vYGDj0H2nMtmtZpKtCwt/l00GEO6xjGfpBNAvjovvYdCm50dRQkpQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   '@poppinss/colors@4.1.6':
     resolution: {integrity: sha512-H9xkIdFswbS8n1d6vmRd8+c10t2Qe+rZITbbDHHkQixH5+2x1FDGmi/0K+WgWiqQFKPSlIYB7jlH6Kpfn6Fleg==}
 
@@ -756,6 +764,16 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.63.0:
+    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
   postcss@8.5.28:
     resolution: {integrity: sha512-RRuzqDtt5Y9h3quz5hWhK+TPnsmVs6WwSU6LkJMeY4HstUEDuYTG8UJSdawMRzmzAtV+KEoG8N3Qg2qLy5vM/A==}
     engines: {node: ^10 || ^12 || >=14}
@@ -1029,7 +1047,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260903.1':
     optional: true
 
-  '@codexpass/tokens@file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz': {}
+  '@codexpass/tokens@file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
@@ -1234,6 +1252,10 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.6.0
 
   '@oxc-project/types@0.148.0': {}
+
+  '@playwright/test@1.63.0':
+    dependencies:
+      playwright: 1.63.0
 
   '@poppinss/colors@4.1.6':
     dependencies:
@@ -1500,6 +1522,12 @@ snapshots:
   picocolors@1.1.1: {}
 
   picomatch@4.0.7: {}
+
+  playwright-core@1.63.0: {}
+
+  playwright@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
 
   postcss@8.5.28:
     dependencies:

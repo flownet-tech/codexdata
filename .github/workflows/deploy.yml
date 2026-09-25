@@ -1,7 +1,6 @@
 name: Deploy
 
-# 暂时只手动触发：仓库里还没有 CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID secrets。
-# 补齐后把 `push: branches: [main]` 加回 `on:` 即可（见 docs/RUNBOOK.md）。
+# Production deployment remains an explicit workflow dispatch after CI passes.
 on:
   workflow_dispatch:
 

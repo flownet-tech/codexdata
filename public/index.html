@@ -4,15 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CodexData — official Codex catalog mirror + third-party model profiles</title>
-    <link rel="icon" href="/codex-pass-logo.png" />
+    <link rel="icon" href="/codex-pass-logo.svg" />
     <link rel="stylesheet" href="/design.css" />
     <script src="/theme.js"></script>
+    <script src="/status.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
     <header class="docs-nav">
       <a class="docs-brand" href="https://console.cp.dev"
-        ><img src="/codex-pass-logo.png" alt="" width="28" height="28" />Codex Pass
+        ><img src="/codex-pass-logo.svg" alt="" width="28" height="28" />Codex Pass
         <span class="muted">/ Data</span></a
       >
       <nav class="docs-links" aria-label="Main navigation">
@@ -25,35 +26,92 @@
     </header>
     <main id="content">
       <p class="docs-eyebrow">Open data for Codex</p>
-      <h1>CodexData</h1>
+      <h1>Codex data.<br />Ready to build with.</h1>
       <p class="muted">
         Not affiliated with OpenAI. An independent, open mirror and dataset for the OpenAI Codex
         client.
       </p>
-      <p>
-        Static JSON served from Cloudflare Workers: a mirror of the official OpenAI Codex model
-        catalog (what the Codex client itself fetches from
-        <code>chatgpt.com/backend-api/codex/models</code>) with snapshots and a change feed, a
-        per-tag registry of the Codex client's feature flags (official facts extracted from the
-        client's own sources, layered with human-curated Chinese annotations), the JSON Schema of
-        Codex's <code>ModelInfo</code>, plus (upcoming) curated third-party model profiles that
-        clients render into Codex's <code>ModelInfo</code> format.
+      <p class="docs-intro">
+        Model catalogs, verified feature flags, and schemas for developers building with Codex. Open
+        JSON endpoints, immutable snapshots, and a traceable source for every dataset.
       </p>
-      <h2 id="endpoints">Endpoints (v1)</h2>
+      <div class="docs-actions">
+        <a class="docs-action" href="/v1/codex/models.json"
+          >Open model catalog <span aria-hidden="true">↗</span></a
+        ><a href="#endpoints">Explore endpoints <span aria-hidden="true">↓</span></a>
+      </div>
+      <section class="docs-overview" aria-labelledby="data-context">
+        <h2 id="data-context">Data at a glance</h2>
+        <dl class="docs-facts">
+          <div>
+            <dt>Mirror health</dt>
+            <dd><a id="mirror-health" href="/healthz">See health endpoint</a></dd>
+          </div>
+          <div>
+            <dt>Last successful check</dt>
+            <dd id="catalog-checked">See <a href="/v1/codex/meta.json">metadata</a></dd>
+          </div>
+          <div>
+            <dt>Content fetched</dt>
+            <dd id="catalog-fetched">See <a href="/v1/codex/meta.json">metadata</a></dd>
+          </div>
+          <div>
+            <dt>Source plan</dt>
+            <dd id="catalog-plan">See <a href="/v1/codex/meta.json">metadata</a></dd>
+          </div>
+          <div>
+            <dt>Schema tag</dt>
+            <dd>
+              <a id="schema-tag" href="/v1/schema/codex-model-info/index.json">Verified tags</a>
+            </dd>
+          </div>
+          <div>
+            <dt>Feature registry tag</dt>
+            <dd><a id="features-tag" href="/v1/features/codex/index.json">Verified tags</a></dd>
+          </div>
+        </dl>
+        <p class="muted docs-caption">
+          Catalog checks and content updates are separate. Schema and feature versions follow
+          verified Codex tags. Health comes from <a href="/healthz">/healthz</a>; missing metadata
+          is not a healthy status.
+        </p>
+      </section>
+      <section class="docs-quickstart" aria-labelledby="quickstart">
+        <div>
+          <p class="docs-eyebrow">START BUILDING</p>
+          <h2 id="quickstart">Quick start</h2>
+          <p>
+            Fetch the model catalog as JSON. Use its <code>ETag</code> with
+            <code>If-None-Match</code> for subsequent requests.
+          </p>
+        </div>
+        <pre
+          aria-label="Fetch the model catalog"
+        ><code>curl -fsS https://data.cp.dev/v1/codex/models.json</code></pre>
+      </section>
+      <nav class="docs-section-nav" aria-label="Dataset navigation">
+        <a href="#endpoints">API reference</a><a href="#caveats">Source &amp; freshness</a
+        ><a href="#licenses">Licenses</a>
+      </nav>
+      <h2 id="endpoints">API reference <span class="muted">/ v1</span></h2>
+      <p class="muted">
+        The catalog is mirrored from <code>chatgpt.com/backend-api/codex/models</code>. Third-party
+        model profiles are planned; they are not part of the current catalog.
+      </p>
       <div class="docs-table">
         <table>
           <tr>
-            <th>Path</th>
-            <th>What</th>
+            <th scope="col">Endpoint</th>
+            <th scope="col">Description</th>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/index.json"><code>/v1/index.json</code></a>
             </td>
             <td>Discovery: endpoints, last sync summary, licenses.</td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/codex/models.json"><code>/v1/codex/models.json</code></a>
             </td>
             <td>
@@ -62,7 +120,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/codex/meta.json"><code>/v1/codex/meta.json</code></a>
             </td>
             <td>
@@ -70,7 +128,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/codex/snapshots/index.json"
                 ><code>/v1/codex/snapshots/index.json</code></a
               >
@@ -81,13 +139,13 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/codex/changes.json"><code>/v1/codex/changes.json</code></a>
             </td>
             <td>Models added / removed / changed, newest first.</td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/schema/codex-model-info/latest.json"
                 ><code>/v1/schema/codex-model-info/latest.json</code></a
               >
@@ -99,7 +157,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/v1/features/codex/latest.json"
                 ><code>/v1/features/codex/latest.json</code></a
               >
@@ -114,14 +172,17 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td data-label="Endpoint">
               <a href="/healthz"><code>/healthz</code></a>
             </td>
-            <td>200 when the mirror has a catalog fetched within 24h; 503 otherwise.</td>
+            <td>
+              200 after a successful catalog check within 24 hours and with no permanent sync
+              failure; 503 otherwise.
+            </td>
           </tr>
         </table>
       </div>
-      <h2>Caveats</h2>
+      <h2 id="caveats">Source &amp; freshness</h2>
       <ul>
         <li>
           The Codex catalog reflects <em>one</em> dedicated ChatGPT account's view (plan label in
@@ -135,7 +196,7 @@
           If the upstream is unreachable, the last successfully fetched catalog keeps being served.
         </li>
       </ul>
-      <h2>Licenses</h2>
+      <h2 id="licenses">Licenses</h2>
       <p class="muted">
         Code: MIT. Profile data, feature-flag registry + annotations: CC-BY-4.0 (derived from
         openai/codex sources, Apache-2.0, reproduced with LICENSE + NOTICE in the repository).
