@@ -1,0 +1,30 @@
+{
+  "repository": "https://github.com/flownet-tech/codex-pass-ui",
+  "baseCommit": "296082053718e21dd39781ce89350e29bd23d7f2",
+  "uncommittedPreview": false,
+  "sourceTreeSha256": "2d786a72f0818fc06a485dd35b3a80b51f0bec603ff17eeb4998eca35bc926d9",
+  "sourceHashes": {
+    "package-lock.json": "a2351a388f9f96778293f5bc641de19bf260e69d2d168917442a7757a69e5bf6",
+    "packages/tokens/LICENSE": "1cfb83def9042da026a4cd7fb54921673ef9069130566eeaf1c28795d036dc53",
+    "packages/tokens/README.md": "94daa636a4b9e148a0936c8aee1dbb98a3909fb97e8dd938e38d1bb9a1242259",
+    "packages/tokens/docs.css": "fdcf02157c79a23358bf01672c35aa41f2030b68b332cf304309c29c332047b4",
+    "packages/tokens/package.json": "219417133a3971f72007c8bceb8ce23a8362d9f9abe339ce294e3ba67ffe9bd7",
+    "packages/tokens/theme.css": "dd99de57f0ac43ecf9c61d6b0a8c1da3f8b112e5591ce94ea5632853db49b3f6",
+    "packages/ui/LICENSE": "1cfb83def9042da026a4cd7fb54921673ef9069130566eeaf1c28795d036dc53",
+    "packages/ui/README.md": "91558386b5bdc2fa45d9686750644e29d3bf187f6913c4b6f2578054a1e49dfd",
+    "packages/ui/package.json": "7ec7c8dfa02a252711f6673f495ee1c95eec90cd3d64f8f86825a46a1fd2f79f",
+    "packages/ui/src/components.css": "03638b38304b19bcdebff64f48b6867c080d5e9e4a208bc6e363adb30d5d02ee",
+    "packages/ui/src/controls.tsx": "b07f0f7b6efe4dfe99b93656c883ec874e12f8b0fd9e46be6293a4acdc39fccf",
+    "packages/ui/src/core.tsx": "f1f547f2172c05a6a48283aefc613f36decf5e6048c5ad06c4cea44a84210d3a",
+    "packages/ui/src/dialog.tsx": "d78eef783f062857e4894f3274814b87f28f8ce332e5be224d3008f8f803cc79",
+    "packages/ui/src/dropdown-menu.tsx": "288322ec0a999b1f5a31abb3237a71fecc706bb093ec840bd205872739df2dc7",
+    "packages/ui/src/floating.tsx": "fb5c17ca279e348c584969285931d181fff13af87573bbd28778b2f80998bba1",
+    "packages/ui/src/index.ts": "494e251987c37fa18299fa2bcdcc12f9cfa8710845f5072edfc11bdec1e21b9d",
+    "packages/ui/src/layout.tsx": "af245eae1c4ca73e3bf16c58ddf8caaaf7e9d55a0662db51e8eb0464145ed45c",
+    "packages/ui/src/select.tsx": "c668a7a53a85e9595c03b57740f59e9ca81b7115f543270712f50b71ec68efea",
+    "packages/ui/src/toast.tsx": "cd31629b1bbfa053b50c84856ba1ec81200c4e348b3ab575078b951b66f814c1",
+    "scripts/build.mjs": "1f8cc56b5d8920eeb775383cfc54874e9db75131c67023f03646c844c837b1ed"
+  },
+  "archive": "codexpass-tokens-0.2.0-5c7cca1e7963.tgz",
+  "archiveSha256": "5c7cca1e7963fc48b9cebea856834118bc8af874817154f856a9830272c69651"
+}

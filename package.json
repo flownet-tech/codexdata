@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "@playwright/test": "1.63.0",
     "prettier": "^3.9.6",
     "typescript": "^5.9.3",
     "vitest": "^4.1.11",
@@ -37,6 +38,6 @@
   },
   "dependencies": {
     "@cfworker/json-schema": "^4.1.1",
-    "@codexpass/tokens": "file:vendor/codexpass-tokens-0.1.0-49e533a1de7f.tgz"
+    "@codexpass/tokens": "file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz"
   }
 }
