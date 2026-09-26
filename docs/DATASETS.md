@@ -97,3 +97,7 @@ Registry + annotations: CC-BY-4.0 (`data/LICENSE-DATA`), derived from openai/cod
 (Apache-2.0, reproduced with `LICENSE` + `NOTICE` under the respective `sources/` directories).
 The Chinese annotations are community commentary grounded in the client's own doc comments and
 observed behavior — **not OpenAI documentation**.
+
+## Hook product registry — `/v1/hooks/codex/`
+
+Versioned display-only product identification, purpose, removal impact and reviewed evidence. `latest.json` contains the full registry; `index.json` links to it and the contribution guide. See [HOOKS.md](HOOKS.md) for the schema and consumer contract.

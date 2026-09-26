@@ -20,7 +20,11 @@ export { SyncCoordinator } from "./sync/coordinator";
 
 const SNAPSHOT_RE = /^\/v1\/codex\/snapshots\/([0-9a-f]{64})\.json$/;
 // 静态数据集前缀（资产层已直出正常请求；到达 Worker = 未命中）。
-const STATIC_DATASET_PREFIXES = ["/v1/features/codex/", "/v1/schema/codex-model-info/"];
+const STATIC_DATASET_PREFIXES = [
+  "/v1/hooks/codex/",
+  "/v1/features/codex/",
+  "/v1/schema/codex-model-info/",
+];
 
 export default {
   async fetch(request, env, ctx): Promise<Response> {

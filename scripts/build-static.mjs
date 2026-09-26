@@ -15,6 +15,8 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { buildHooks } from "./hooks.mjs";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const publicDir = join(root, "public");
 
@@ -151,6 +153,19 @@ const files = new Map();
   );
 }
 
+const hooks = buildHooks();
+files.set("v1/hooks/codex/latest.json", pretty(hooks));
+files.set(
+  "v1/hooks/codex/index.json",
+  pretty({
+    dataset: hooks.dataset,
+    schema_version: hooks.schema_version,
+    latest: `${origin}/v1/hooks/codex/latest.json`,
+    contribute: "https://github.com/flownet-tech/codexdata/blob/main/docs/HOOKS.md",
+    license: "CC-BY-4.0",
+  }),
+);
+
 // ── /v1/* 资产响应头（只作用于静态资源层；Worker 动态路由的头在代码里） ────────
 files.set(
   "_headers",
@@ -164,7 +179,7 @@ files.set(
 );
 
 // ── 写盘 / 校验（管理的目录内多出来的文件也算漂移，防止旧 tag 残留） ──────────
-const managedDirs = ["v1/features/codex", "v1/schema/codex-model-info"];
+const managedDirs = ["v1/hooks/codex", "v1/features/codex", "v1/schema/codex-model-info"];
 const problems = [];
 for (const [rel, content] of files) {
   const path = join(publicDir, rel);

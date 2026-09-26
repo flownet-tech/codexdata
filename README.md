@@ -86,3 +86,7 @@ pnpm run deploy     # deploy (note: `pnpm deploy` alone is pnpm's own workspace 
 node scripts/extract-features.mjs   # sources/*.rs → data/codex-features/registry.json
 pnpm build:static                   # data/* → public/v1/** static dataset files + _headers
 ```
+
+## Hook product registry
+
+`/v1/hooks/codex/latest.json` identifies known hook script paths and provides multilingual purpose and removal notes. Matching runs locally in consumers; commands are never submitted to CodexData. See [the contribution guide](docs/HOOKS.md).

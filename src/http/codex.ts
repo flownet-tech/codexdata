@@ -94,6 +94,8 @@ export async function serveIndex(env: Env, origin: string): Promise<Response> {
         codex_changes: `${origin}/v1/codex/changes.json`,
         codex_model_info_schema: `${origin}/v1/schema/codex-model-info/latest.json`,
         codex_model_info_schema_index: `${origin}/v1/schema/codex-model-info/index.json`,
+        codex_hook_products: `${origin}/v1/hooks/codex/latest.json`,
+        codex_hook_products_index: `${origin}/v1/hooks/codex/index.json`,
         codex_feature_flags: `${origin}/v1/features/codex/latest.json`,
         codex_feature_flags_index: `${origin}/v1/features/codex/index.json`,
         health: `${origin}/healthz`,
