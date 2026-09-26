@@ -1,0 +1,150 @@
+{
+  "dataset": "codex-hook-products",
+  "schema_version": 1,
+  "products": [
+    {
+      "id": "herdr",
+      "name": "Herdr",
+      "path_suffixes": [
+        "/herdr-agent-state.sh"
+      ],
+      "evidence": "documented",
+      "references": [
+        {
+          "kind": "official",
+          "url": "https://herdr.dev/docs/integrations/",
+          "note": "Codex integration documents the script filename and session identity reporting."
+        },
+        {
+          "kind": "local-observation",
+          "note": "Observed integration version 6 reports pane.report_agent_session over a local socket when HERDR_ENV, HERDR_SOCKET_PATH and HERDR_PANE_ID are set."
+        }
+      ],
+      "i18n": {
+        "en": {
+          "summary": "Associates a Codex session with a Herdr pane for session restoration. The observed script reports the session ID through a local socket when running inside Herdr.",
+          "removal": "Removing this registration stops session identity reporting to Herdr. If you no longer use Herdr, remove the registration; if installed, herdr integration uninstall codex also removes its script."
+        },
+        "zh": {
+          "summary": "把 Codex 会话关联到 Herdr 窗格，供会话恢复使用。已核对的脚本仅在 Herdr 环境中通过本地 socket 上报会话 ID。",
+          "removal": "删除后不再向 Herdr 上报会话身份。不再使用 Herdr 时可删除；若仍安装着 Herdr，也可用 herdr integration uninstall codex 一并卸载脚本。"
+        },
+        "zh-TW": {
+          "summary": "將 Codex 工作階段關聯至 Herdr 窗格，供還原工作階段使用。已核對的腳本僅在 Herdr 環境中透過本機 socket 回報工作階段 ID。",
+          "removal": "刪除後不再向 Herdr 回報工作階段身分。不再使用 Herdr 時可刪除；若仍安裝 Herdr，也可用 herdr integration uninstall codex 一併移除腳本。"
+        },
+        "ja": {
+          "summary": "Codex セッションを Herdr のペインに関連付け、復元に利用します。確認したスクリプトは Herdr 環境内でローカル socket にセッション ID を送ります。",
+          "removal": "削除すると Herdr へのセッション情報の通知が止まります。Herdr を使わない場合は削除できます。インストール済みなら herdr integration uninstall codex でスクリプトも削除できます。"
+        }
+      },
+      "examples": {
+        "match": [
+          "bash '/Users/demo/.codex/herdr-agent-state.sh' session",
+          "bash /custom/codex-home/herdr-agent-state.sh session"
+        ],
+        "no_match": [
+          "bash /tmp/herdr-agent-state.sh.bak",
+          "echo herdr",
+          "bash /tmp/not-herdr-agent-state.sh"
+        ]
+      },
+      "reviewed_at": "2026-09-26"
+    },
+    {
+      "id": "orca",
+      "name": "Orca",
+      "path_suffixes": [
+        "/.orca/agent-hooks/codex-hook.sh"
+      ],
+      "evidence": "documented",
+      "references": [
+        {
+          "kind": "official",
+          "url": "https://www.onorca.dev/docs/settings",
+          "note": "Agents settings document status hooks and orca agent hooks on|off|status."
+        },
+        {
+          "kind": "local-observation",
+          "note": "Observed codex-hook.sh forwards hook events to a local 127.0.0.1 Orca endpoint, or spools eligible events locally. The registered shell wrapper checks file existence, readability and executability."
+        }
+      ],
+      "i18n": {
+        "en": {
+          "summary": "Forwards Codex events to Orca so it can display agent activity and waiting/completed states. The observed script uses a local endpoint with a local event-spool fallback.",
+          "removal": "Removing this registration stops these event reports to Orca. If you still use Orca, turn off Agent status hooks in its settings first (orca agent hooks off); otherwise it may register them again."
+        },
+        "zh": {
+          "summary": "将 Codex 事件交给 Orca，用于显示 Agent 活动、等待与完成状态。已核对的脚本使用本地端点，并可将部分事件暂存到本地。",
+          "removal": "删除后 Orca 将收不到这些事件。若仍使用 Orca，先在其设置中关闭 Agent status hooks（orca agent hooks off），避免应用再次注册。"
+        },
+        "zh-TW": {
+          "summary": "將 Codex 事件交給 Orca，用於顯示 Agent 活動、等待與完成狀態。已核對的腳本使用本機端點，也可將部分事件暫存於本機。",
+          "removal": "刪除後 Orca 將收不到這些事件。若仍使用 Orca，先在其設定中關閉 Agent status hooks（orca agent hooks off），避免應用程式再次註冊。"
+        },
+        "ja": {
+          "summary": "Codex のイベントを Orca に渡し、Agent の動作・待機・完了状態の表示に使います。確認したスクリプトはローカルの送信先を使い、一部のイベントをローカルに保存できます。",
+          "removal": "削除するとこれらのイベントが Orca に届かなくなります。引き続き Orca を使う場合は、再登録を防ぐため設定の Agent status hooks を先にオフにしてください（orca agent hooks off）。"
+        }
+      },
+      "examples": {
+        "match": [
+          "if [ -f '/Users/demo/.orca/agent-hooks/codex-hook.sh' ]; then /bin/sh '/Users/demo/.orca/agent-hooks/codex-hook.sh'; else cat >/dev/null; fi",
+          "sh /home/demo/.orca/agent-hooks/codex-hook.sh"
+        ],
+        "no_match": [
+          "sh /tmp/codex-hook.sh",
+          "sh /home/demo/.orca/agent-hooks/codex-hook.sh.old"
+        ]
+      },
+      "reviewed_at": "2026-09-26"
+    },
+    {
+      "id": "xirp",
+      "name": "Xirp",
+      "path_suffixes": [
+        "/Xirp/xirp-external/hook-scripts/codex/sessionStart.cjs",
+        "/Xirp/xirp-external/hook-scripts/codex/preToolUse.cjs",
+        "/Xirp/xirp-external/hook-scripts/codex/stop.cjs",
+        "/Xirp/xirp-external/hook-scripts/codex/permissionRequest.cjs"
+      ],
+      "evidence": "observed",
+      "references": [
+        {
+          "kind": "local-observation",
+          "note": "Observed Codex registrations reference Xirp/xirp-external/hook-scripts/codex/{sessionStart,preToolUse,stop,permissionRequest}.cjs. Script contents were unavailable; exact behavior is unverified."
+        }
+      ],
+      "i18n": {
+        "en": {
+          "summary": "Matches a Xirp Codex integration script path for session start, tool use, stop or permission requests. Script contents were unavailable; the exact behavior has not been verified.",
+          "removal": "Removing this registration stops the corresponding Xirp callback. If you no longer use Xirp, you can remove it; if still in use, check its integration settings first."
+        },
+        "zh": {
+          "summary": "路径对应 Xirp 的 Codex 集成脚本，涉及会话开始、工具调用、停止或权限请求。未取得脚本内容，具体行为尚未核实。",
+          "removal": "删除后将不再触发对应的 Xirp 回调。不再使用 Xirp 时可删除；若仍使用，请先检查其集成设置。"
+        },
+        "zh-TW": {
+          "summary": "路徑對應 Xirp 的 Codex 整合腳本，涉及工作階段開始、工具呼叫、停止或權限請求。未取得腳本內容，具體行為尚未核實。",
+          "removal": "刪除後將不再觸發對應的 Xirp 回呼。不再使用 Xirp 時可刪除；若仍使用，請先檢查其整合設定。"
+        },
+        "ja": {
+          "summary": "セッション開始、ツール使用、停止、権限要求に対応する Xirp の Codex 連携スクリプトのパスに一致します。スクリプト本体は入手できず、具体的な動作は未確認です。",
+          "removal": "削除すると対応する Xirp コールバックが実行されなくなります。Xirp を使わない場合は削除できます。引き続き使う場合は連携設定を先に確認してください。"
+        }
+      },
+      "examples": {
+        "match": [
+          "'/Users/demo/Library/Application Support/Xirp/xirp-external/hook-scripts/codex/sessionStart.cjs'",
+          "\"C:\\Users\\demo\\AppData\\Roaming\\Xirp\\xirp-external\\hook-scripts\\codex\\stop.cjs\""
+        ],
+        "no_match": [
+          "node /tmp/sessionStart.cjs",
+          "'/Users/demo/Library/Application Support/NotXirp/xirp-external/hook-scripts/codex/stop.cjs'",
+          "node /tmp/Xirp/xirp-external/hook-scripts/codex/stop.cjs.backup"
+        ]
+      },
+      "reviewed_at": "2026-09-26"
+    }
+  ]
+}

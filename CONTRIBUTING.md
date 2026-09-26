@@ -79,3 +79,7 @@ are OpenAI's, Apache-2.0, and must stay byte-verbatim.
 - 诚实纪律：只写有依据的内容（官方 rustdoc / 菜单文案 / 你亲自验证过的行为），拿不准就在
   `note` 里写明「未确认」，禁止编造；翻译忠实于原意，不加戏。
 - 提交前跑 `pnpm validate && pnpm build:static`（Node ≥ 22），把 `public/` 下生成的变更一并提交。
+
+## Hook descriptions
+
+Contribute one product file under `data/codex-hooks/products/`. See [docs/HOOKS.md](docs/HOOKS.md) for the schema, evidence requirements, matching contract and validation steps.

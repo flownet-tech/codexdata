@@ -1,0 +1,7 @@
+{
+  "dataset": "codex-hook-products",
+  "schema_version": 1,
+  "latest": "https://data.cp.dev/v1/hooks/codex/latest.json",
+  "contribute": "https://github.com/flownet-tech/codexdata/blob/main/docs/HOOKS.md",
+  "license": "CC-BY-4.0"
+}
