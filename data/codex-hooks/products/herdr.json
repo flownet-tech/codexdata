@@ -43,5 +43,10 @@
       "bash /tmp/not-herdr-agent-state.sh"
     ]
   },
-  "reviewed_at": "2026-09-26"
+  "reviewed_at": "2026-09-26",
+  "icon": {
+    "file": "herdr.png",
+    "source_url": "https://herdr.dev/assets/favicon.png",
+    "rights": "Herdr product mark, from the official website favicon; resized to 64x64 for identification. All rights remain with the respective owner; not covered by the dataset CC-BY-4.0 license."
+  }
 }

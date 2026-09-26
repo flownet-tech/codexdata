@@ -110,6 +110,27 @@
         }
       },
       "required": ["match", "no_match"]
+    },
+    "icon": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{1,39}\\.png$"
+        },
+        "source_url": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500
+        },
+        "rights": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500
+        }
+      },
+      "required": ["file", "source_url", "rights"]
     }
   },
   "required": [

@@ -48,5 +48,10 @@
       "node /tmp/Xirp/xirp-external/hook-scripts/codex/stop.cjs.backup"
     ]
   },
-  "reviewed_at": "2026-09-26"
+  "reviewed_at": "2026-09-26",
+  "icon": {
+    "file": "xirp.png",
+    "source_url": "https://xirp.spotify.com/icon.png",
+    "rights": "Spotify product mark, from the official website favicon; resized to 64x64 for identification. All rights remain with the respective owner; not covered by the dataset CC-BY-4.0 license."
+  }
 }

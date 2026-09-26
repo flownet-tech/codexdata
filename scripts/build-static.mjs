@@ -163,6 +163,7 @@ files.set(
     latest: `${origin}/v1/hooks/codex/latest.json`,
     contribute: "https://github.com/flownet-tech/codexdata/blob/main/docs/HOOKS.md",
     license: "CC-BY-4.0",
+    icon_rights: "Product marks retain their owners' rights; see each product's icon.rights.",
   }),
 );
 
