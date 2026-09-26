@@ -14,4 +14,4 @@ Data 保持静态 HTML。内容在 `public/index.html`；颜色、字体和文�
 
 `node scripts/e2e/design-refresh.mjs` 在本地静态预览 5191 使用合成 metadata，检查 Chromium/WebKit、503、网络错误、无 JS 与 320/390/1440 明暗页面；不写生产数据。首次运行先 `pnpm exec playwright install chromium webkit`；截图默认写入 `.artifacts/design-refresh/`，可通过 `DESIGN_ARTIFACT_DIR` 指定绝对输出目录。
 
-当前发布使用共享品牌蓝 #2563EB、胶囊按钮；CP 标志沿用正式版原色；成功、警告和错误状态保持独立语义。
+当前设计使用共享冰薄荷深浅主题、黑白胶囊主按钮与薄荷圆底箭头；CP 标志沿用正式版原色；成功、警告和错误状态保持独立语义。

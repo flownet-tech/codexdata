@@ -12,8 +12,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       '@codexpass/tokens':
-        specifier: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz
-        version: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz
+        specifier: file:vendor/codexpass-tokens-0.3.0-b9cbe7ee63e7.tgz
+        version: file:vendor/codexpass-tokens-0.3.0-b9cbe7ee63e7.tgz
     devDependencies:
       '@cloudflare/vitest-pool-workers':
         specifier: ^0.22.0
@@ -119,9 +119,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@codexpass/tokens@file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz':
-    resolution: {integrity: sha512-GG1JgRT9eoTSJ4BDqnztcTcR7ybPckVdFQonCAopUhR69ZHUBdarDPvuQm/YiKaZq89kVGN/S6PmnbAwgkWErQ==, tarball: file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz}
-    version: 0.2.0
+  '@codexpass/tokens@file:vendor/codexpass-tokens-0.3.0-b9cbe7ee63e7.tgz':
+    resolution: {integrity: sha512-zvYKaEhCkm61y/YnOGzg3CBTYoEOS0ayXBFSaz3ZXBh0nlSfWcj9dgy7po85sSoN0g2nneUgGsuQC2/Alwh6WQ==, tarball: file:vendor/codexpass-tokens-0.3.0-b9cbe7ee63e7.tgz}
+    version: 0.3.0
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -1047,7 +1047,7 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20260903.1':
     optional: true
 
-  '@codexpass/tokens@file:vendor/codexpass-tokens-0.2.0-5c7cca1e7963.tgz': {}
+  '@codexpass/tokens@file:vendor/codexpass-tokens-0.3.0-b9cbe7ee63e7.tgz': {}
 
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
