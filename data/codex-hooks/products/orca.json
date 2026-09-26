@@ -39,5 +39,10 @@
     ],
     "no_match": ["sh /tmp/codex-hook.sh", "sh /home/demo/.orca/agent-hooks/codex-hook.sh.old"]
   },
-  "reviewed_at": "2026-09-26"
+  "reviewed_at": "2026-09-26",
+  "icon": {
+    "file": "orca.png",
+    "source_url": "https://www.onorca.dev/icon.png",
+    "rights": "Orca product mark, from the official website favicon; resized to 64x64 for identification. All rights remain with the respective owner; not covered by the dataset CC-BY-4.0 license."
+  }
 }

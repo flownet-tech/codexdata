@@ -4,6 +4,10 @@ The curated data under `data/` (third-party model profiles for the Codex client,
 JSON Schema files for Codex's `ModelInfo`) is licensed under the Creative Commons Attribution 4.0
 International License (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/
 
+Exception: product marks under `data/codex-hooks/icons/` and their embedded copies in generated
+registries retain their owners' rights. Neither CC BY 4.0 nor the code's MIT license applies
+to those images. See each product's `icon.source_url` and `icon.rights` for provenance.
+
 Attribution: "Codex Models (https://codex-models.flownet.workers.dev) — CC BY 4.0".
 
 Files copied from the openai/codex repository (the base instructions prompt and per-tag source

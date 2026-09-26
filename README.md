@@ -68,6 +68,8 @@ Public host: `https://data.cp.dev` (the earlier `https://codexdata.0xinf.net` an
 ## Licenses
 
 Code: MIT (`LICENSE`). Profile data under `data/`: CC-BY-4.0 (`data/LICENSE-DATA`).
+Third-party product icons retain their owners' rights and are excluded from both licenses;
+see `icon.rights` and the [icon contribution guide](docs/HOOKS.md#product-icons).
 `/v1/codex/*`: none granted (OpenAI's content, relayed as-is).
 
 ## Development
